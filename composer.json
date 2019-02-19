@@ -1,0 +1,43 @@
+{
+    "name": "trendyminds/isolate",
+    "description": "Force users to only access a subset of your entries",
+    "type": "craft-plugin",
+    "version": "1.0.0",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "isolate"
+    ],
+    "support": {
+        "docs": "https://github.com/trendyminds/isolate/blob/master/README.md",
+        "issues": "https://github.com/trendyminds/isolate/issues"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "TrendyMinds",
+            "homepage": "https://trendyminds.com"
+        }
+    ],
+    "require": {
+        "craftcms/cms": "^3.0.0-RC1"
+    },
+    "autoload": {
+        "psr-4": {
+          "trendyminds\\isolate\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "Isolate",
+        "handle": "isolate",
+        "hasCpSettings": true,
+        "hasCpSection": true,
+        "changelogUrl": "https://raw.githubusercontent.com/trendyminds/isolate/master/CHANGELOG.md",
+        "components": {
+            "isolateService": "trendyminds\\isolate\\services\\IsolateService"
+        },
+        "class": "trendyminds\\isolate\\Isolate"
+    }
+}
