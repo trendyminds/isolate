@@ -14,6 +14,7 @@ use trendyminds\isolate\Isolate;
 
 use Craft;
 use craft\web\Controller;
+use craft\services\UserPermissions;
 
 /**
  * @author    TrendyMinds
@@ -31,7 +32,12 @@ class DefaultController extends Controller
      *         The actions must be in 'kebab-case'
      * @access protected
      */
-    protected $allowAnonymous = ['index', 'users', 'help'];
+    protected $allowAnonymous = [
+        'index',
+        'users',
+        'getUser',
+        'help'
+    ];
 
     // Public Methods
     // =========================================================================
@@ -50,6 +56,20 @@ class DefaultController extends Controller
     public function actionUsers()
     {
         return $this->renderTemplate('isolate/users');
+    }
+
+    /**
+     * @return mixed
+     */
+    public function actionGetUser(int $userId)
+    {
+        $user = Isolate::$plugin->isolateService->getUser($userId);
+        $sections = Isolate::$plugin->isolateService->getUserSections($userId);
+
+        return $this->renderTemplate('isolate/users', [
+            "user" => $user,
+            "sections" => $sections
+        ]);
     }
 
     /**

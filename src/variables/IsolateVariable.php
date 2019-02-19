@@ -28,4 +28,9 @@ class IsolateVariable
     {
         return Isolate::$plugin->settings->displayName;
     }
+
+    public function users()
+    {
+        return Isolate::$plugin->isolateService->getUsers();
+    }
 }

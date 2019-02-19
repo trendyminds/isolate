@@ -67,7 +67,8 @@ class Isolate extends Plugin
             UrlManager::EVENT_REGISTER_CP_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
                 $event->rules = array_merge($event->rules, [
-                    "isolate" => "isolate/default/index"
+                    "isolate" => "isolate/default/index",
+                    "isolate/users/<userId:\d+>" => "isolate/default/get-user"
                 ]);
             }
         );

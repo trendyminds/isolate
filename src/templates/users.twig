@@ -20,9 +20,34 @@
 {% do view.registerAssetBundle("trendyminds\\isolate\\assetbundles\\indexcpsection\\IndexCPSectionAsset") %}
 
 {% set selectedSubnavItem = "users" %}
-{% set title = "Users" %}
+{% set title = user is not defined ? "Users" : user.name %}
 
 {% set pluginCpUrl = url('isolate') %}
 
+{% block sidebar %}
+  <nav>
+    <ul>
+      <li class="heading"><span>Users</span></li>
+      {% for user in craft.isolate.users %}
+        <li><a href="{{url('isolate/users/' ~ user.id)}}">{{user.name}}</a></li>
+      {% endfor %}
+    </ul>
+  </nav>
+{% endblock %}
+
 {% set content %}
+  {% if sections is defined %}
+    {% for section in sections %}
+      <h2>{{section.name}}</h2>
+      {% if section.canEdit %}
+        <ul>
+          <li>1</li>
+          <li>2</li>
+          <li>3</li>
+        </ul>
+      {% else %}
+        <p>This user cannot edit {{section.name}} entries</p>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
 {% endset %}
