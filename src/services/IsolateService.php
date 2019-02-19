@@ -15,6 +15,7 @@ use trendyminds\isolate\Isolate;
 use Craft;
 use craft\base\Component;
 use craft\elements\User;
+use craft\elements\Entry;
 
 /**
  * @author    TrendyMinds
@@ -68,6 +69,7 @@ class IsolateService extends Component
         foreach ($allSections as $section) {
             $sections[] = [
                 "name" => $section->name,
+                "handle" => $section->handle,
                 "canEdit" => Craft::$app->getUserPermissions()->doesUserHavePermission($userId, "editEntries:{$section->uid}")
             ];
         }

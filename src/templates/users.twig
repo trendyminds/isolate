@@ -21,6 +21,7 @@
 
 {% set selectedSubnavItem = "users" %}
 {% set title = user is not defined ? "Users" : user.name %}
+{% set fullPageForm = true %}
 
 {% set pluginCpUrl = url('isolate') %}
 
@@ -29,7 +30,7 @@
     <ul>
       <li class="heading"><span>Users</span></li>
       {% for user in craft.isolate.users %}
-        <li><a href="{{url('isolate/users/' ~ user.id)}}">{{user.name}}</a></li>
+        <li><a href="{{url('isolate/users/' ~ user.id)}}" class="{{id == user.id ? 'sel' : ''}}">{{user.name}}</a></li>
       {% endfor %}
     </ul>
   </nav>
@@ -39,15 +40,34 @@
   {% if sections is defined %}
     {% for section in sections %}
       <h2>{{section.name}}</h2>
+
       {% if section.canEdit %}
-        <ul>
-          <li>1</li>
-          <li>2</li>
-          <li>3</li>
-        </ul>
-      {% else %}
-        <p>This user cannot edit {{section.name}} entries</p>
+        {% set options = [] %}
+
+        {% for entry in craft.entries.section(section.handle).limit(NULL).all() %}
+          {% set options = options | merge([{
+              label: entry.title,
+              id: entry.id,
+              checked: true,
+              disabled: true
+            }])
+          %}
+        {% endfor %}
+
+        {{ forms.checkboxGroupField({
+            label: "",
+            name: section.handle,
+            options: options
+          })
+        }}
       {% endif %}
+
+      {% if not section.canEdit %}
+        <p class="light">This user currently does not have permission to edit <strong>{{section.name}}</strong> entries.</p>
+        <p><a href="{{url('users/' ~ user.id)}}#perms" class="go">Modify this user's permissions</a></p>
+      {% endif %}
+
+      <hr>
     {% endfor %}
   {% endif %}
 {% endset %}
