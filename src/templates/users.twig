@@ -93,7 +93,7 @@
           </div>
         {% endif %}
 
-        {% if entries | length == 0 %}
+        {% if entries | length == 0 and section.canEdit %}
           <p class="light">This section does not have any entries at this time.</p>
           <p><a href="{{url('entries/' ~ section.handle ~ '/new')}}" class="go">Create a new {{section.name}} entry</a></p>
         {% endif %}
