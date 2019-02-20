@@ -21,6 +21,8 @@ use craft\events\PluginEvent;
 use craft\web\UrlManager;
 use craft\web\twig\variables\CraftVariable;
 use craft\events\RegisterUrlRulesEvent;
+use craft\events\RegisterUserPermissionsEvent;
+use craft\services\UserPermissions;
 
 use yii\base\Event;
 
@@ -84,11 +86,14 @@ class Isolate extends Plugin
         );
 
         Event::on(
-            Plugins::class,
-            Plugins::EVENT_AFTER_INSTALL_PLUGIN,
-            function (PluginEvent $event) {
-                if ($event->plugin === $this) {
-                }
+            UserPermissions::class,
+            UserPermissions::EVENT_REGISTER_PERMISSIONS,
+            function(RegisterUserPermissionsEvent $event) {
+                $event->permissions["General"]["accessCp"]["nested"]["accessPlugin-isolate"]["nested"] = [
+                    'isolate:assign' => [
+                        'label' => 'Assign permissions',
+                    ],
+                ];
             }
         );
 
@@ -112,11 +117,22 @@ class Isolate extends Plugin
         $item = parent::getCpNavItem();
         $item['label'] = $this->getDisplayName();
 
-        $item['subnav'] = [
-            'dashboard' => ['label' => 'Dashboard', 'url' => 'isolate'],
-            'users' => ['label' => 'Users', 'url' => 'isolate/users'],
-            'help' => ['label' => 'Help', 'url' => 'isolate/help'],
-        ];
+        /**
+         * If a user can't assign entries then they
+         *   1. Don't need to see any of the subnav items (the nav item goes to dashboard by default)
+         *   2. They can't see the users area
+         */
+        if (Craft::$app->user->checkPermission('isolate:assign')) {
+            $item['subnav']['dashboard'] = [
+                'label' => 'Dashboard',
+                'url' => 'isolate'
+            ];
+
+            $item['subnav']['users'] = [
+                'label' => 'Users',
+                'url' => 'isolate/users'
+            ];
+        }
 
         return $item;
     }

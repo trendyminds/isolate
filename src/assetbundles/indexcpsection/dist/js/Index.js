@@ -41,11 +41,7 @@ class PermissionGroup {
     ev.preventDefault();
 
     if (this.enabled) {
-      const getConfirm = confirm(`Are you sure you want to all this user to edit all ${this.groupName} entries?`);
-
-      if (getConfirm) {
-        this.disable();
-      }
+      this.disable();
     } else {
       this.enable();
     }

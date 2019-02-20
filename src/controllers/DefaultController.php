@@ -36,8 +36,7 @@ class DefaultController extends Controller
         'index',
         'users',
         'saveUser',
-        'getUser',
-        'help'
+        'getUser'
     ];
 
     // Public Methods
@@ -91,13 +90,5 @@ class DefaultController extends Controller
             "sections" => $sections,
             "assignedEntries" => $assignedEntries
         ]);
-    }
-
-    /**
-     * @return mixed
-     */
-    public function actionHelp()
-    {
-        return $this->renderTemplate('isolate/help');
     }
 }

@@ -106,6 +106,29 @@ class IsolateService extends Component
     public function savePermissions(int $userId, array $entries)
     {
         /**
+         * If a user has been assigned permissions, enable Isolate automatically to make the workflow contained in one place
+         */
+        if (count($entries) > 0) {
+            $usersPermissions = Craft::$app->userPermissions->getPermissionsByUserId($userId);
+            $usersPermissions[] = "accessplugin-isolate";
+
+            Craft::$app->userPermissions->saveUserPermissions($userId, $usersPermissions);
+        }
+
+        /**
+         * If a user has no assigned permissions disable their access to Isolate
+         */
+        if (count($entries) === 0) {
+            $usersPermissions = Craft::$app->userPermissions->getPermissionsByUserId($userId);
+
+            $usersPermissions = array_filter($usersPermissions, function($permission) {
+                return $permission !== "accessplugin-isolate";
+            });
+
+            Craft::$app->userPermissions->saveUserPermissions($userId, $usersPermissions);
+        }
+
+        /**
          * Remove entries that were de-selected
          */
         $existingEntries = IsolateRecord::findAll([
