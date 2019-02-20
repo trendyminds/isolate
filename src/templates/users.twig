@@ -21,7 +21,7 @@
 
 {% set selectedSubnavItem = "users" %}
 {% set title = user is not defined ? "Users" : user.name %}
-{% set fullPageForm = true %}
+{% set fullPageForm = user is defined ? true : false %}
 
 {% set pluginCpUrl = url('isolate') %}
 
@@ -30,44 +30,68 @@
     <ul>
       <li class="heading"><span>Users</span></li>
       {% for user in craft.isolate.users %}
-        <li><a href="{{url('isolate/users/' ~ user.id)}}" class="{{id == user.id ? 'sel' : ''}}">{{user.name}}</a></li>
+        {% set class = "" %}
+
+        {% if id is defined and id == user.id %}
+          {% set class = "sel" %}
+        {% endif %}
+
+        <li><a href="{{url('isolate/users/' ~ user.id)}}" class="{{class}}">{{user.name}}</a></li>
       {% endfor %}
     </ul>
   </nav>
 {% endblock %}
 
+{% set assignedEntries = [] %}
+
+{% for permission in craft.isolate.getAssignedEntries(id) %}
+  {% set assignedEntries = assignedEntries | merge([permission.entryId]) %}
+{% endfor %}
+
 {% set content %}
+  {% if user is defined %}
+    <input type="hidden" name="action" value="isolate/default/save-user">
+    <input type="hidden" name="userId" value="{{id}}">
+  {% endif %}
+
   {% if sections is defined %}
     {% for section in sections %}
-      <h2>{{section.name}}</h2>
+      <section class="isolate__section" data-disabled="{{craft.isolate.getAssignedEntries(id, section.id) | length == 0 ? 'true' : 'false'}}">
+        <div class="isolate__section-header">
+          <h2 class="isolate__section-name">{{section.name}}</h2>
+          <a href="#" class="isolate__section-toggle js-manage icon secure" id="manage-{{section.handle}}">
+            <span>Assign</span>
+          </a>
+        </div>
 
-      {% if section.canEdit %}
-        {% set options = [] %}
+        {% if section.canEdit %}
+          {% set options = [] %}
 
-        {% for entry in craft.entries.section(section.handle).limit(NULL).all() %}
-          {% set options = options | merge([{
-              label: entry.title,
-              id: entry.id,
-              checked: true,
-              disabled: true
-            }])
-          %}
-        {% endfor %}
+          {% for entry in craft.entries.section(section.handle).limit(NULL).all() %}
+            {% set options = options | merge([{
+                label: entry.title,
+                value: entry.id,
+                name: "entries[" ~ section.id ~ "][]",
+                disabled: true,
+                checked: entry.id in assignedEntries
+              }])
+            %}
+          {% endfor %}
 
-        {{ forms.checkboxGroupField({
-            label: "",
-            name: section.handle,
-            options: options
-          })
-        }}
-      {% endif %}
+          <div class="manage-{{section.handle}}">
+            {{ forms.checkboxGroupField({
+                label: "",
+                options: options
+              })
+            }}
+          </div>
+        {% endif %}
 
-      {% if not section.canEdit %}
-        <p class="light">This user currently does not have permission to edit <strong>{{section.name}}</strong> entries.</p>
-        <p><a href="{{url('users/' ~ user.id)}}#perms" class="go">Modify this user's permissions</a></p>
-      {% endif %}
-
-      <hr>
+        {% if not section.canEdit %}
+          <p class="light">This user currently does not have permission to edit <strong>{{section.name}}</strong> entries.</p>
+          <p><a href="{{url('users/' ~ user.id)}}#perms" class="go">Modify this user's permissions</a></p>
+        {% endif %}
+      </section>
     {% endfor %}
   {% endif %}
 {% endset %}

@@ -35,6 +35,7 @@ class DefaultController extends Controller
     protected $allowAnonymous = [
         'index',
         'users',
+        'saveUser',
         'getUser',
         'help'
     ];
@@ -61,15 +62,30 @@ class DefaultController extends Controller
     /**
      * @return mixed
      */
+    public function actionSaveUser()
+    {
+        $this->requirePostRequest();
+
+        $userId = Craft::$app->getRequest()->getBodyParam("userId");
+        $entries = Craft::$app->getRequest()->getBodyParam("entries");
+
+        $success = Isolate::$plugin->isolateService->savePermissions($userId, $entries);
+    }
+
+    /**
+     * @return mixed
+     */
     public function actionGetUser(int $userId)
     {
         $user = Isolate::$plugin->isolateService->getUser($userId);
         $sections = Isolate::$plugin->isolateService->getUserSections($userId);
+        $assignedEntries = Isolate::$plugin->isolateService->getAssignedEntries($userId);
 
         return $this->renderTemplate('isolate/users', [
             "id" => $userId,
             "user" => $user,
-            "sections" => $sections
+            "sections" => $sections,
+            "assignedEntries" => $assignedEntries
         ]);
     }
 

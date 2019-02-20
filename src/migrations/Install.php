@@ -42,10 +42,8 @@ class Install extends Migration
         $this->driver = Craft::$app->getConfig()->getDb()->driver;
         if ($this->createTables()) {
             $this->createIndexes();
-            $this->addForeignKeys();
             // Refresh the db schema caches
             Craft::$app->db->schema->refresh();
-            $this->insertDefaultData();
         }
 
         return true;
@@ -72,18 +70,19 @@ class Install extends Migration
     {
         $tablesCreated = false;
 
-        $tableSchema = Craft::$app->db->schema->getTableSchema('{{%isolate_isolaterecord}}');
+        $tableSchema = Craft::$app->db->schema->getTableSchema('{{%isolate_permissions}}');
         if ($tableSchema === null) {
             $tablesCreated = true;
             $this->createTable(
-                '{{%isolate_isolaterecord}}',
+                '{{%isolate_permissions}}',
                 [
                     'id' => $this->primaryKey(),
+                    'userId' => $this->integer()->notNull(),
+                    'entryId' => $this->integer()->notNull(),
+                    'sectionId' => $this->integer()->notNull(),
                     'dateCreated' => $this->dateTime()->notNull(),
                     'dateUpdated' => $this->dateTime()->notNull(),
-                    'uid' => $this->uid(),
-                    'siteId' => $this->integer()->notNull(),
-                    'some_field' => $this->string(255)->notNull()->defaultValue(''),
+                    'uid' => $this->uid()
                 ]
             );
         }
@@ -96,16 +95,6 @@ class Install extends Migration
      */
     protected function createIndexes()
     {
-        $this->createIndex(
-            $this->db->getIndexName(
-                '{{%isolate_isolaterecord}}',
-                'some_field',
-                true
-            ),
-            '{{%isolate_isolaterecord}}',
-            'some_field',
-            true
-        );
         // Additional commands depending on the db driver
         switch ($this->driver) {
             case DbConfig::DRIVER_MYSQL:
@@ -118,31 +107,8 @@ class Install extends Migration
     /**
      * @return void
      */
-    protected function addForeignKeys()
-    {
-        $this->addForeignKey(
-            $this->db->getForeignKeyName('{{%isolate_isolaterecord}}', 'siteId'),
-            '{{%isolate_isolaterecord}}',
-            'siteId',
-            '{{%sites}}',
-            'id',
-            'CASCADE',
-            'CASCADE'
-        );
-    }
-
-    /**
-     * @return void
-     */
-    protected function insertDefaultData()
-    {
-    }
-
-    /**
-     * @return void
-     */
     protected function removeTables()
     {
-        $this->dropTableIfExists('{{%isolate_isolaterecord}}');
+        $this->dropTableIfExists('{{%isolate_permissions}}');
     }
 }

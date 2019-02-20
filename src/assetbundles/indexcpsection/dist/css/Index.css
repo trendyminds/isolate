@@ -9,3 +9,29 @@
  * @package   Isolate
  * @since     1.0.0
  */
+
+.isolate__section:not(:last-of-type) {
+  border-bottom: 1px solid #ddd;
+  padding: 0 0 1.5rem;
+  margin: 0 0 1.5rem;
+}
+
+.isolate__section-header {
+  display: flex;
+}
+
+.isolate__section-name {
+  margin-right: 1rem;
+}
+
+.isolate__section-toggle {
+  font-size: 12px;
+}
+
+.isolate__section-toggle:hover {
+  text-decoration: none;
+}
+
+.isolate__section-toggle span {
+  padding-left: 3px;
+}

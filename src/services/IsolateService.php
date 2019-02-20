@@ -11,6 +11,7 @@
 namespace trendyminds\isolate\services;
 
 use trendyminds\isolate\Isolate;
+use trendyminds\isolate\records\IsolateRecord;
 
 use Craft;
 use craft\base\Component;
@@ -69,11 +70,40 @@ class IsolateService extends Component
         foreach ($allSections as $section) {
             $sections[] = [
                 "name" => $section->name,
+                "id" => $section->id,
                 "handle" => $section->handle,
                 "canEdit" => Craft::$app->getUserPermissions()->doesUserHavePermission($userId, "editEntries:{$section->uid}")
             ];
         }
 
         return $sections;
+    }
+
+    /*
+     * @return mixed
+     */
+    public function getAssignedEntries(int $userId, int $sectionId = NULL)
+    {
+        return IsolateRecord::find()->filterWhere(["userId" => $userId, "sectionId" => $sectionId])->all();
+    }
+
+    /*
+     * @return mixed
+     */
+    public function savePermissions(int $userId, array $entries)
+    {
+        foreach ($entries as $sectionId => $entries)
+        {
+            foreach ($entries as $entryId)
+            {
+                $record = new IsolateRecord;
+
+                $record->setAttribute('userId', $userId);
+                $record->setAttribute('entryId', $entryId);
+                $record->setAttribute('sectionId', $sectionId);
+
+                $record->save();
+            }
+        }
     }
 }

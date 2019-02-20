@@ -30,6 +30,6 @@ class IsolateRecord extends ActiveRecord
      */
     public static function tableName()
     {
-        return '{{%isolate_isolaterecord}}';
+        return '{{%isolate_permissions}}';
     }
 }
