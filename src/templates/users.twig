@@ -20,6 +20,7 @@
 {% do view.registerAssetBundle("trendyminds\\isolate\\assetbundles\\indexcpsection\\IndexCPSectionAsset") %}
 
 {% set selectedSubnavItem = "users" %}
+
 {% set title = user is not defined ? "Users" : user.name %}
 {% set fullPageForm = user is defined ? true : false %}
 
@@ -29,6 +30,7 @@
   <nav>
     <ul>
       <li class="heading"><span>Users</span></li>
+
       {% for user in craft.isolate.users %}
         {% set class = "" %}
 
@@ -42,12 +44,6 @@
   </nav>
 {% endblock %}
 
-{% set assignedEntries = [] %}
-
-{% for permission in craft.isolate.getAssignedEntries(id) %}
-  {% set assignedEntries = assignedEntries | merge([permission.entryId]) %}
-{% endfor %}
-
 {% set content %}
   {% if user is defined %}
     <input type="hidden" name="action" value="isolate/default/save-user">
@@ -56,7 +52,7 @@
 
   {% if sections is defined %}
     {% for section in sections %}
-      <section class="isolate__section" data-disabled="{{craft.isolate.getAssignedEntries(id, section.id) | length == 0 ? 'true' : 'false'}}">
+      <section class="isolate__section">
         <div class="isolate__section-header">
           <h2 class="isolate__section-name">{{section.name}}</h2>
           <a href="#" class="isolate__section-toggle js-manage icon secure" id="manage-{{section.handle}}">
@@ -71,9 +67,9 @@
             {% set options = options | merge([{
                 label: entry.title,
                 value: entry.id,
-                name: "entries[" ~ section.id ~ "][]",
+                name: "entries[]",
                 disabled: true,
-                checked: entry.id in assignedEntries
+                checked: true
               }])
             %}
           {% endfor %}

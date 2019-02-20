@@ -82,9 +82,11 @@ class IsolateService extends Component
     /*
      * @return mixed
      */
-    public function getAssignedEntries(int $userId, int $sectionId = NULL)
+    public function getAssignedEntries(int $userId)
     {
-        return IsolateRecord::find()->filterWhere(["userId" => $userId, "sectionId" => $sectionId])->all();
+        return IsolateRecord::find()
+            ->where(["userId" => $userId])
+            ->all();
     }
 
     /*
@@ -92,18 +94,41 @@ class IsolateService extends Component
      */
     public function savePermissions(int $userId, array $entries)
     {
-        foreach ($entries as $sectionId => $entries)
+        /**
+         * Remove entries that were de-selected
+         */
+        $existingEntries = IsolateRecord::findAll([
+            "userId" => $userId
+        ]);
+
+        $existingEntries = array_map(function($permission) {
+            return $permission->entryId;
+        }, $existingEntries);
+
+        $entriesToRemove = array_values(array_diff($existingEntries, $entries));
+
+        foreach ($entriesToRemove as $entryId)
         {
-            foreach ($entries as $entryId)
-            {
-                $record = new IsolateRecord;
+            $record = IsolateRecord::findOne([
+                "entryId" => $entryId
+            ]);
 
-                $record->setAttribute('userId', $userId);
-                $record->setAttribute('entryId', $entryId);
-                $record->setAttribute('sectionId', $sectionId);
+            $record->delete();
+        }
 
-                $record->save();
-            }
+        /**
+         * Add entries that are new selections
+         */
+        $entriesToAdd = array_values(array_diff($entries, $existingEntries));
+
+        foreach ($entriesToAdd as $entryId)
+        {
+            $record = new IsolateRecord;
+
+            $record->setAttribute('userId', $userId);
+            $record->setAttribute('entryId', $entryId);
+
+            $record->save();
         }
     }
 }
