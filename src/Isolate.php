@@ -20,6 +20,7 @@ use craft\services\Plugins;
 use craft\events\PluginEvent;
 use craft\web\UrlManager;
 use craft\web\twig\variables\CraftVariable;
+use craft\web\twig\variables\UserSession;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\services\UserPermissions;
@@ -68,10 +69,10 @@ class Isolate extends Plugin
             UrlManager::class,
             UrlManager::EVENT_REGISTER_CP_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
-                if (
-                    !Craft::$app->user->checkPermission('isolate:assign') &&
-                    Craft::$app->user->checkPermission('accessplugin-isolate')
-                ) {
+                $userSession = new UserSession();
+
+                // Only apply assets if user is logged in
+                if ($userSession->isLoggedIn()) {
                     Isolate::$plugin->isolateService->includeIsolatedAssets();
                 }
 

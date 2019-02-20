@@ -167,8 +167,27 @@ class IsolateService extends Component
         }
     }
 
+    public function userIsIsolated(int $userId)
+    {
+        // If this user is assigned an entry then this user is isolated
+        $hasEntry = IsolateRecord::findOne([
+            "userId" => $userId
+        ]);
+
+        if ($hasEntry) {
+            return true;
+        }
+
+        return false;
+    }
+
     public function includeIsolatedAssets()
     {
-        Craft::$app->getView()->registerAssetBundle(IsolateAsset::class);
+        $currentUserId = Craft::$app->getUser()->id;
+
+        if (Isolate::$plugin->isolateService->userIsIsolated($currentUserId))
+        {
+            Craft::$app->getView()->registerAssetBundle(IsolateAsset::class);
+        }
     }
 }
