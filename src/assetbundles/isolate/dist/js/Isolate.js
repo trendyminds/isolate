@@ -9,3 +9,19 @@
  * @package   Isolate
  * @since     1.0.0
  */
+
+class Isolate {
+  constructor() {
+    this.$mainNav = document.querySelector("#nav");
+
+    this.removeEntriesNav();
+  }
+
+  removeEntriesNav() {
+    const $nav = this.$mainNav.querySelector("#nav-entries");
+
+    $nav.parentNode.removeChild($nav);
+  }
+}
+
+new Isolate();

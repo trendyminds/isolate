@@ -12,6 +12,7 @@ namespace trendyminds\isolate\services;
 
 use trendyminds\isolate\Isolate;
 use trendyminds\isolate\records\IsolateRecord;
+use trendyminds\isolate\assetbundles\Isolate\IsolateAsset;
 
 use Craft;
 use craft\base\Component;
@@ -164,5 +165,10 @@ class IsolateService extends Component
 
             $record->save();
         }
+    }
+
+    public function includeIsolatedAssets()
+    {
+        Craft::$app->getView()->registerAssetBundle(IsolateAsset::class);
     }
 }
