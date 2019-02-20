@@ -44,11 +44,13 @@
   </nav>
 {% endblock %}
 
-{% set assignedEntries = [] %}
+{% if user is defined %}
+  {% set assignedEntries = [] %}
 
-{% for permission in craft.isolate.getUserEntries(id) %}
-  {% set assignedEntries = assignedEntries | merge([permission.entryId]) %}
-{% endfor %}
+  {% for permission in craft.isolate.getUserEntries(id) %}
+    {% set assignedEntries = assignedEntries | merge([permission.entryId]) %}
+  {% endfor %}
+{% endif %}
 
 {% set content %}
   {% if user is defined %}
@@ -102,5 +104,9 @@
         {% endif %}
       </section>
     {% endfor %}
+  {% endif %}
+
+  {% if sections is not defined %}
+    {% include "isolate/_partials/empty-frame" %}
   {% endif %}
 {% endset %}
