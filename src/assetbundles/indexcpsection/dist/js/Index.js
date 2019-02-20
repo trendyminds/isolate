@@ -10,12 +10,10 @@
  * @since     1.0.0
  */
 
-// $("[data-disabled='false'] input").attr("disabled", false);
-// $("[data-disabled='true'] input").attr("checked", true);
-
 class PermissionGroup {
   constructor($group) {
     this.$group = $group;
+    this.groupName = this.$group.dataset.isolateGroup;
     this.$toggle = this.$group.querySelector("[data-toggle]");
     this.$label = this.$group.querySelector("[data-toggle-label]");
     this.$checkboxes = this.$group.querySelectorAll("input");
@@ -43,7 +41,11 @@ class PermissionGroup {
     ev.preventDefault();
 
     if (this.enabled) {
-      this.disable();
+      const getConfirm = confirm(`Are you sure you want to all this user to edit all ${this.groupName} entries?`);
+
+      if (getConfirm) {
+        this.disable();
+      }
     } else {
       this.enable();
     }
@@ -65,14 +67,14 @@ class PermissionGroup {
     this.$checkboxes.forEach($checkbox => $checkbox.removeAttribute("disabled"));
     this.$toggle.classList.remove("insecure");
     this.$toggle.classList.add("secure");
-    this.$label.innerHTML = "Reset";
+    this.$label.innerHTML = `Allow user to access all entries`;
   }
 
   disableCheckboxes() {
     this.$checkboxes.forEach($checkbox => $checkbox.setAttribute("disabled", "disabled"));
     this.$toggle.classList.remove("secure");
     this.$toggle.classList.add("insecure");
-    this.$label.innerHTML = "Assign Entries";
+    this.$label.innerHTML = "Assign a subset of entries";
   }
 }
 

@@ -58,18 +58,20 @@
 
   {% if sections is defined %}
     {% for section in sections %}
-      <section class="isolate__section" data-isolate-group data-enabled="{{craft.isolate.getUserEntries(id, section.id) | length > 0 ? 'true' : 'false'}}">
+      {% set entries = craft.entries.section(section.handle).limit(NULL).all() %}
+
+      <section class="isolate__section" data-isolate-group="{{section.name}}" data-enabled="{{craft.isolate.getUserEntries(id, section.id) | length > 0 ? 'true' : 'false'}}">
         <div class="isolate__section-header">
           <h2 class="isolate__section-name">{{section.name}}</h2>
-          <a href="#" class="isolate__section-toggle icon secure" data-toggle="manage-{{section.handle}}">
+          <a href="#" class="isolate__section-toggle icon" data-toggle="manage-{{section.handle}}">
             <span data-toggle-label></span>
           </a>
         </div>
 
-        {% if section.canEdit %}
+        {% if section.canEdit and entries | length > 0 %}
           {% set options = [] %}
 
-          {% for entry in craft.entries.section(section.handle).limit(NULL).all() %}
+          {% for entry in entries %}
             {% set options = options | merge([{
                 label: entry.title,
                 value: entry.id,
@@ -87,6 +89,11 @@
               })
             }}
           </div>
+        {% endif %}
+
+        {% if entries | length == 0 %}
+          <p class="light">This section does not have any entries at this time.</p>
+          <p><a href="{{url('entries/' ~ section.handle ~ '/new')}}" class="go">Create a new {{section.name}} entry</a></p>
         {% endif %}
 
         {% if not section.canEdit %}

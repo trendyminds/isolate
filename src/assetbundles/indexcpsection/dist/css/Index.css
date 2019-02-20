@@ -17,11 +17,13 @@
 }
 
 .isolate__section-header {
+  align-items: center;
   display: flex;
+  margin-bottom: 1rem;
 }
 
 .isolate__section-name {
-  margin-right: 1rem;
+  margin: 0 1rem 0 0;
 }
 
 .isolate__section-toggle {
