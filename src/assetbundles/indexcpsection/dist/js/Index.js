@@ -77,21 +77,3 @@ class PermissionGroup {
 }
 
 document.querySelectorAll("[data-isolate-group]").forEach($el => new PermissionGroup($el));
-
-// $(".js-manage").on("click", function(ev) {
-//   ev.preventDefault();
-
-//   if (this.classList.contains("modified")) {
-//     $(this).find("span").text("Assign");
-//     $(this).removeClass("modified").removeClass("insecure").addClass("secure");
-
-//     $(`.${this.id} input`).attr("disabled", true);
-//     $(`.${this.id} input`).attr("checked", true);
-//   } else {
-//     $(this).find("span").text("Enable All");
-//     $(this).addClass("modified").addClass("insecure").removeClass("secure");
-
-//     $(`.${this.id} input`).attr("disabled", false);
-//     $(`.${this.id} input`).attr("checked", false);
-//   }
-// });
