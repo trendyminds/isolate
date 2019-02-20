@@ -44,6 +44,12 @@
   </nav>
 {% endblock %}
 
+{% set assignedEntries = [] %}
+
+{% for permission in craft.isolate.getUserEntries(id) %}
+  {% set assignedEntries = assignedEntries | merge([permission.entryId]) %}
+{% endfor %}
+
 {% set content %}
   {% if user is defined %}
     <input type="hidden" name="action" value="isolate/default/save-user">
@@ -52,11 +58,11 @@
 
   {% if sections is defined %}
     {% for section in sections %}
-      <section class="isolate__section">
+      <section class="isolate__section" data-isolate-group data-enabled="{{craft.isolate.getUserEntries(id, section.id) | length > 0 ? 'true' : 'false'}}">
         <div class="isolate__section-header">
           <h2 class="isolate__section-name">{{section.name}}</h2>
-          <a href="#" class="isolate__section-toggle js-manage icon secure" id="manage-{{section.handle}}">
-            <span>Assign</span>
+          <a href="#" class="isolate__section-toggle icon secure" data-toggle="manage-{{section.handle}}">
+            <span data-toggle-label></span>
           </a>
         </div>
 
@@ -69,7 +75,7 @@
                 value: entry.id,
                 name: "entries[]",
                 disabled: true,
-                checked: true
+                checked: entry.id in assignedEntries
               }])
             %}
           {% endfor %}

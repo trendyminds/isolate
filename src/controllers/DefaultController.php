@@ -69,6 +69,10 @@ class DefaultController extends Controller
         $userId = Craft::$app->getRequest()->getBodyParam("userId");
         $entries = Craft::$app->getRequest()->getBodyParam("entries");
 
+        if (!$entries) {
+            $entries = [];
+        }
+
         $success = Isolate::$plugin->isolateService->savePermissions($userId, $entries);
     }
 
@@ -79,7 +83,7 @@ class DefaultController extends Controller
     {
         $user = Isolate::$plugin->isolateService->getUser($userId);
         $sections = Isolate::$plugin->isolateService->getUserSections($userId);
-        $assignedEntries = Isolate::$plugin->isolateService->getAssignedEntries($userId);
+        $assignedEntries = Isolate::$plugin->isolateService->getUserEntries($userId);
 
         return $this->renderTemplate('isolate/users', [
             "id" => $userId,

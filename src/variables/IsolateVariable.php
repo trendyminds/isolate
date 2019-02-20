@@ -34,8 +34,8 @@ class IsolateVariable
         return Isolate::$plugin->isolateService->getUsers();
     }
 
-    public function getAssignedEntries(int $userId, int $sectionId = NULL)
+    public function getUserEntries(int $userId, int $sectionId = null)
     {
-        return Isolate::$plugin->isolateService->getAssignedEntries($userId, $sectionId);
+        return Isolate::$plugin->isolateService->getUserEntries($userId, $sectionId);
     }
 }

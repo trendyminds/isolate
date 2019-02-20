@@ -17,6 +17,7 @@ use Craft;
 use craft\base\Component;
 use craft\elements\User;
 use craft\elements\Entry;
+use craft\db\Query;
 
 /**
  * @author    TrendyMinds
@@ -82,11 +83,21 @@ class IsolateService extends Component
     /*
      * @return mixed
      */
-    public function getAssignedEntries(int $userId)
+    public function getUserEntries(int $userId, int $sectionId = null)
     {
-        return IsolateRecord::find()
-            ->where(["userId" => $userId])
+        $query = new Query();
+
+        $records = $query
+            ->select(["iso.*", "ent.sectionId"])
+            ->from("{{%isolate_permissions}} iso")
+            ->leftJoin("{{%entries}} ent", "ent.id=iso.entryId")
+            ->filterWhere([
+                "iso.userId" => $userId,
+                "ent.sectionId" => $sectionId
+            ])
             ->all();
+
+        return $records;
     }
 
     /*
