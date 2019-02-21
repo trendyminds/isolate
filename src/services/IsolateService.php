@@ -188,6 +188,11 @@ class IsolateService extends Component
         return false;
     }
 
+    /**
+     * Injects the Isolated CSS and JS files
+     *
+     * @return void
+     */
     public function includeIsolatedAssets()
     {
         $currentUserId = Craft::$app->getUser()->id;
@@ -230,6 +235,11 @@ class IsolateService extends Component
         return true;
     }
 
+    /**
+     * Takes an entry URL from the control panel and grabs just the ID of the entry
+     *
+     * @return integer
+     */
     public function getEntryIdFromUrl()
     {
         $entryUri = Craft::$app->request->getSegment(3);
@@ -239,6 +249,11 @@ class IsolateService extends Component
         return $matches[0];
     }
 
+    /**
+     * Checks if the user has access to the page they requested
+     *
+     * @return void
+     */
     public function checkUserAccess()
     {
         $authenticateCheck = new AuthenticationService();
