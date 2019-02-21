@@ -55,7 +55,7 @@ class IsolateService extends Component
      * @param integer $userId
      * @return void
      */
-    public function getAssignedSections(int $userId)
+    public function getUserEditableSections(int $userId)
     {
         $sections = [];
 
