@@ -246,13 +246,13 @@ class IsolateService extends Component
         }
 
         // Prevent users from accessing the Entries section
-        if ($authenticateCheck->isEntriesArea())
+        if ($authenticateCheck->isUserInEntriesArea())
         {
             Isolate::$plugin->isolateService->showAuthError();
         }
 
         // Are we in an entry page?
-        if ($authenticateCheck->isEntry())
+        if ($authenticateCheck->isUserInEntry())
         {
             $entryId = Isolate::$plugin->isolateService->getEntryIdFromUrl();
 

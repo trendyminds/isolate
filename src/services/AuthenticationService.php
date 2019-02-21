@@ -27,7 +27,7 @@ class AuthenticationService extends Component
      *
      * @return boolean
      */
-    public function isEntriesArea()
+    public function isUserInEntriesArea()
     {
         if (
             Craft::$app->request->getSegment(1) === "entries" &&
@@ -45,7 +45,7 @@ class AuthenticationService extends Component
      *
      * @return boolean
      */
-    public function isEntry()
+    public function isUserInEntry()
     {
         if (
             Craft::$app->request->getSegment(1) === "entries" &&
