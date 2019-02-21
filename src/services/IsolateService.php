@@ -31,8 +31,13 @@ class IsolateService extends Component
     // Public Methods
     // =========================================================================
 
-    /*
-     * @return mixed
+    /**
+     * Get users
+     *
+     * Fetches all users who can be isolated.
+     * Does not include admins or users who can't access the control panel
+     *
+     * @return array
      */
     public function getUsers()
     {
@@ -42,16 +47,6 @@ class IsolateService extends Component
             ->all();
 
         return $users;
-    }
-
-    /*
-     * @return mixed
-     */
-    public function getUser(int $id)
-    {
-        return User::find()
-            ->id($id)
-            ->one();
     }
 
     /*
@@ -276,7 +271,7 @@ class IsolateService extends Component
         // Prevent users from accessing the Entries section
         if (Isolate::$plugin->isolateService->isEntriesArea())
         {
-            Isolate::$plugin->isolateService->restrictUser();
+            Isolate::$plugin->isolateService->showAuthError();
         }
 
         // Are we in an entry page?
@@ -287,14 +282,19 @@ class IsolateService extends Component
             // Can this user access this entry?
             if (!Isolate::$plugin->isolateService->canUserAccessEntry($currentUserId, $entryId))
             {
-                Isolate::$plugin->isolateService->restrictUser();
+                Isolate::$plugin->isolateService->showAuthError();
             }
         }
 
         return true;
     }
 
-    public function restrictUser()
+    /**
+     * Show authorization error to user
+     *
+     * @return ForbiddenHttpException
+     */
+    public function showAuthError()
     {
         throw new ForbiddenHttpException('User is not permitted to perform this action');
     }

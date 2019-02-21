@@ -14,7 +14,7 @@ use trendyminds\isolate\Isolate;
 
 use Craft;
 use craft\web\Controller;
-use craft\services\UserPermissions;
+use craft\elements\User;
 
 /**
  * @author    TrendyMinds
@@ -80,12 +80,15 @@ class DefaultController extends Controller
      */
     public function actionGetUser(int $userId)
     {
-        $user = Isolate::$plugin->isolateService->getUser($userId);
-        $sections = Isolate::$plugin->isolateService->getUserSections($userId);
-        $assignedEntries = Isolate::$plugin->isolateService->getUserEntries($userId);
+        $user = User::findOne([
+            "id" => $userId
+        ]);
+
+        $sections = Isolate::$plugin->isolateService->getUserSections($user->id);
+        $assignedEntries = Isolate::$plugin->isolateService->getUserEntries($user->id);
 
         return $this->renderTemplate('isolate/users', [
-            "id" => $userId,
+            "id" => $user->id,
             "user" => $user,
             "sections" => $sections,
             "assignedEntries" => $assignedEntries
