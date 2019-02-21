@@ -90,8 +90,7 @@ class DefaultController extends Controller
         return $this->renderTemplate('isolate/users', [
             "id" => $user->id,
             "user" => $user,
-            "sections" => $sections,
-            "assignedEntries" => $assignedEntries
+            "sections" => $sections
         ]);
     }
 }
