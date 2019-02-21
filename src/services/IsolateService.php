@@ -236,7 +236,7 @@ class IsolateService extends Component
     public function checkUserAccess()
     {
         $authenticateCheck = new AuthenticationService();
-        $currentUser = Craft::$app->getUser()->id;
+        $currentUser = Craft::$app->getUser();
 
         // Is this user managed by Isolate?
         // If not, don't bother checking anything else
