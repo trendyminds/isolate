@@ -72,7 +72,7 @@ class DefaultController extends Controller
             $entries = [];
         }
 
-        $success = Isolate::$plugin->isolateService->savePermissions($userId, $entries);
+        $success = Isolate::$plugin->isolateService->modifyRecord($userId, $entries);
     }
 
     /**

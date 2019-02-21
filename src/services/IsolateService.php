@@ -98,10 +98,14 @@ class IsolateService extends Component
         return $records;
     }
 
-    /*
-     * @return mixed
+    /**
+     * Modifies database record of an isolated user (adds/edit/removes)
+     *
+     * @param integer $userId
+     * @param array $entries
+     * @return void
      */
-    public function savePermissions(int $userId, array $entries)
+    public function modifyRecord(int $userId, array $entries)
     {
         /**
          * If a user has been assigned permissions, enable Isolate automatically to make the workflow contained in one place
@@ -164,7 +168,13 @@ class IsolateService extends Component
         }
     }
 
-    public function userIsIsolated(int $userId)
+    /**
+     * Is the user isolated?
+     *
+     * @param integer $userId
+     * @return bool
+     */
+    public function isUserIsolated(int $userId)
     {
         // If this user is assigned an entry then this user is isolated
         $hasEntry = IsolateRecord::findOne([
@@ -182,7 +192,7 @@ class IsolateService extends Component
     {
         $currentUserId = Craft::$app->getUser()->id;
 
-        if (Isolate::$plugin->isolateService->userIsIsolated($currentUserId))
+        if (Isolate::$plugin->isolateService->isUserIsolated($currentUserId))
         {
             Craft::$app->getView()->registerAssetBundle(IsolateAsset::class);
         }
@@ -246,15 +256,6 @@ class IsolateService extends Component
         preg_match("/^\d*/", $entryUri, $matches);
 
         return $matches[0];
-    }
-
-    public function isUserIsolated(int $userId)
-    {
-        $record = IsolateRecord::findOne([
-            "userId" => $userId
-        ]);
-
-        return $record !== null;
     }
 
     public function checkUserAccess()
