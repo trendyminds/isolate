@@ -57,57 +57,59 @@
   {% if user is defined %}
     <input type="hidden" name="action" value="isolate/default/save-user">
     <input type="hidden" name="userId" value="{{user.id}}">
-  {% endif %}
 
-  {% if userSections is defined %}
-    {% for section in userSections %}
-      {% set entries = craft.entries.section(section.handle).limit(NULL).all() %}
+    {% for section in craft.sections.getAllSections %}
+      {% set userCanEdit = user.can("editEntries:" ~ section.uid) %}
 
-      <section class="isolate__section" data-isolate-group="{{section.name}}" data-enabled="{{craft.isolate.getUserEntries(user.id, section.id) | length > 0 ? 'true' : 'false'}}">
-        <div class="isolate__section-header">
-          <h2 class="isolate__section-name">{{section.name}}</h2>
-          <a href="#" class="isolate__section-toggle icon" data-toggle="manage-{{section.handle}}">
-            <span data-toggle-label></span>
-          </a>
-        </div>
+      {% if section.type != "single" %}
+        {% set entries = craft.entries.section(section.handle).limit(NULL).all() %}
 
-        {% if section.canEdit and entries | length > 0 %}
-          {% set options = [] %}
-
-          {% for entry in entries %}
-            {% set options = options | merge([{
-                label: entry.title,
-                value: entry.id,
-                name: "entries[]",
-                disabled: true,
-                checked: entry.id in assignedEntries
-              }])
-            %}
-          {% endfor %}
-
-          <div class="manage-{{section.handle}}">
-            {{ forms.checkboxGroupField({
-                label: "",
-                options: options
-              })
-            }}
+        <section class="isolate__section" data-isolate-group="{{section.name}}" data-enabled="{{craft.isolate.getUserEntries(user.id, section.id) | length > 0 ? 'true' : 'false'}}">
+          <div class="isolate__section-header">
+            <h2 class="isolate__section-name">{{section.name}}</h2>
+            <a href="#" class="isolate__section-toggle icon" data-toggle="manage-{{section.handle}}">
+              <span data-toggle-label></span>
+            </a>
           </div>
-        {% endif %}
 
-        {% if entries | length == 0 and section.canEdit %}
-          <p class="light">This section does not have any entries at this time.</p>
-          <p><a href="{{url('entries/' ~ section.handle ~ '/new')}}" class="go">Create a new {{section.name}} entry</a></p>
-        {% endif %}
+          {% if userCanEdit and entries | length > 0 %}
+            {% set options = [] %}
 
-        {% if not section.canEdit %}
-          <p class="light">This user currently does not have permission to edit <strong>{{section.name}}</strong> entries.</p>
-          <p><a href="{{url('users/' ~ user.id)}}#perms" class="go">Modify this user's permissions</a></p>
-        {% endif %}
-      </section>
+            {% for entry in entries %}
+              {% set options = options | merge([{
+                  label: entry.title,
+                  value: entry.id,
+                  name: "entries[]",
+                  disabled: true,
+                  checked: entry.id in assignedEntries
+                }])
+              %}
+            {% endfor %}
+
+            <div class="manage-{{section.handle}}">
+              {{ forms.checkboxGroupField({
+                  label: "",
+                  options: options
+                })
+              }}
+            </div>
+          {% endif %}
+
+          {% if entries | length == 0 and userCanEdit %}
+            <p class="light">This section does not have any entries at this time.</p>
+            <p><a href="{{url('entries/' ~ section.handle ~ '/new')}}" class="go">Create a new {{section.name}} entry</a></p>
+          {% endif %}
+
+          {% if not userCanEdit %}
+            <p class="light">This user currently does not have permission to edit <strong>{{section.name}}</strong> entries.</p>
+            <p><a href="{{url('users/' ~ user.id)}}#perms" class="go">Modify this user's permissions</a></p>
+          {% endif %}
+        </section>
+      {% endif %}
     {% endfor %}
   {% endif %}
 
-  {% if userSections is not defined %}
+  {% if user is not defined %}
     {% include "isolate/_partials/empty-frame" %}
   {% endif %}
 {% endset %}

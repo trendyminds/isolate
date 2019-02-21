@@ -49,36 +49,6 @@ class IsolateService extends Component
         return $users;
     }
 
-    /**
-     * Returns an array of sections (excluding Singles) that a user can edit entries in
-     *
-     * @param integer $userId
-     * @return void
-     */
-    public function getUserEditableSections(int $userId)
-    {
-        $sections = [];
-
-        $allSections = Craft::$app->sections->getAllSections();
-
-        // Filter out the sections that are "singles"
-        $allSections = array_filter($allSections, function($section) {
-            return $section->type !== "single";
-        });
-
-        // Return a new array that outputs the section name and if this user can edit the entries in that content type
-        foreach ($allSections as $section) {
-            $sections[] = [
-                "name" => $section->name,
-                "id" => $section->id,
-                "handle" => $section->handle,
-                "canEdit" => Craft::$app->getUserPermissions()->doesUserHavePermission($userId, "editEntries:{$section->uid}")
-            ];
-        }
-
-        return $sections;
-    }
-
     /*
      * @return mixed
      */
