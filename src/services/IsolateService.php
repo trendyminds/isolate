@@ -298,4 +298,39 @@ class IsolateService extends Component
     {
         throw new ForbiddenHttpException('User is not permitted to perform this action');
     }
+
+    public function getEntriesNav()
+    {
+        $nav = [];
+        $entries = [];
+
+        $query = new Query();
+
+        $rawEntries = $query
+            ->select(["ent.id", "con.title", "ent.sectionId"])
+            ->from("{{%entries}} ent")
+            ->leftJoin("{{%content}} con", "ent.id=con.elementId")
+            ->all();
+
+        foreach ($rawEntries as $entry)
+        {
+            $entries[$entry['sectionId']][] = $entry;
+        }
+
+        Craft::dd($entries);
+
+        foreach (Craft::$app->sections->getEditableSections() as $section)
+        {
+            $type = ucfirst($section->type) . "s";
+
+            $nav[$type][] = [
+                "title" => $section->name,
+                "id" => (int) $section->id
+            ];
+        }
+
+        Craft::dd($nav);
+
+        return $nav;
+    }
 }

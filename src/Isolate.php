@@ -72,7 +72,8 @@ class Isolate extends Plugin
                 }
 
                 $event->rules = array_merge($event->rules, [
-                    "isolate" => "isolate/default/index",
+                    "isolate/dashboard" => "isolate/default/index",
+                    "isolate/dashboard/<sectionHandle:{handle}>" => "isolate/default/index",
                     "isolate/users/<userId:\d+>" => "isolate/default/get-user"
                 ]);
             }
@@ -134,7 +135,7 @@ class Isolate extends Plugin
         if (Craft::$app->user->checkPermission('isolate:assign')) {
             $item['subnav']['dashboard'] = [
                 'label' => 'Dashboard',
-                'url' => 'isolate'
+                'url' => 'isolate/dashboard'
             ];
 
             $item['subnav']['users'] = [

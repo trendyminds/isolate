@@ -13,6 +13,10 @@
  */
 #}
 
+{% if craft.app.request.getSegment(2) != "dashboard" %}
+  {% redirect "isolate/dashboard" %}
+{% endif %}
+
 {% extends "_layouts/cp" %}
 {% import "_includes/forms" as forms %}
 
@@ -22,13 +26,43 @@
 
 {% set pluginCpUrl = url('isolate') %}
 
+{% set sectionGroup = craft.sections.getEditableSections() | group('type') %}
+
 {% block sidebar %}
   <nav>
     <ul>
-      <li class="heading"><span>Entries</span></li>
+      {% for type, sections in sectionGroup %}
+        <li class="heading"><span>{{type | ucfirst}}s</span></li>
+
+        {% for section in sections %}
+          <li><a href="{{url('isolate/dashboard/' ~ section.handle)}}">{{section.name}}</a></li>
+        {% endfor %}
+      {% endfor %}
     </ul>
   </nav>
 {% endblock %}
 
-{% set content %}
-{% endset %}
+{% block content %}
+  {% if craft.app.request.getSegment(3) %}
+    <table class="data fullwidth collapsible">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Post Date</th>
+          <th data-icon="world"></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for entry in craft.entries.section(craft.app.request.getSegment(3)).all() %}
+          <tr>
+            <td><a href="{{entry.cpEditUrl}}">{{entry.title}}</a></td>
+            <td>{{entry.postDate | date("n/j/Y")}}</td>
+            <td><a href="{{entry.url}}" target="_blank" data-icon="world"></a></td>
+          </tr>
+        {% endfor %}
+  {% endif %}
+
+  {% if not craft.app.request.getSegment(3) %}
+    {% include "isolate/_partials/empty-frame" %}
+  {% endif %}
+{% endblock %}

@@ -38,4 +38,9 @@ class IsolateVariable
     {
         return Isolate::$plugin->isolateService->getUserEntries($userId, $sectionId);
     }
+
+    public function nav()
+    {
+        return Isolate::$plugin->isolateService->getEntriesNav();
+    }
 }
