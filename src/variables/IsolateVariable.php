@@ -24,9 +24,9 @@ class IsolateVariable
     // Public Methods
     // =========================================================================
 
-    public function displayName()
+    public function sidebarLabel()
     {
-        return Isolate::$plugin->settings->displayName;
+        return Isolate::$plugin->settings->sidebarLabel;
     }
 
     public function users()

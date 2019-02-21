@@ -110,15 +110,21 @@ class Isolate extends Plugin
         );
     }
 
-    public function getDisplayName()
+    public function getSidebarLabel()
     {
-        return Craft::t('isolate', $this->getSettings()->displayName);
+        return Craft::t('isolate', $this->getSettings()->sidebarLabel);
     }
 
     public function getCpNavItem()
     {
         $item = parent::getCpNavItem();
-        $item['label'] = $this->getDisplayName();
+
+        /**
+         * If a user is assigned entries use the display name for the sidebar label
+         */
+        if (!Craft::$app->user->checkPermission('isolate:assign')) {
+            $item['label'] = $this->getSidebarLabel();
+        }
 
         /**
          * If a user can't assign entries then they

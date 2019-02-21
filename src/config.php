@@ -23,5 +23,5 @@
  */
 
 return [
-    "displayName" => "Isolate"
+    "sidebarLabel" => "Entries"
 ];

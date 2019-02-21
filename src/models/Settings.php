@@ -28,7 +28,7 @@ class Settings extends Model
     /**
      * @var string
      */
-    public $displayName = 'Isolate';
+    public $sidebarLabel = 'Entries';
 
     // Public Methods
     // =========================================================================
@@ -39,8 +39,8 @@ class Settings extends Model
     public function rules()
     {
         return [
-            ['displayName', 'string'],
-            ['displayName', 'default', 'value' => 'Isolate'],
+            ['sidebarLabel', 'string'],
+            ['sidebarLabel', 'default', 'value' => 'Entries'],
         ];
     }
 }
