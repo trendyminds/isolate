@@ -17,6 +17,7 @@ use trendyminds\isolate\assetbundles\Isolate\IsolateAsset;
 use Craft;
 use craft\base\Component;
 use craft\elements\User;
+use craft\elements\Entry;
 use craft\db\Query;
 use craft\web\twig\variables\Request;
 use yii\base\Exception;
@@ -91,9 +92,10 @@ class IsolateService extends Component
         $query = new Query();
 
         $records = $query
-            ->select(["iso.*", "ent.sectionId"])
+            ->select(["iso.*", "ent.sectionId", "sec.handle"])
             ->from("{{%isolate_permissions}} iso")
             ->leftJoin("{{%entries}} ent", "ent.id=iso.entryId")
+            ->leftJoin("{{%sections}} sec", "sec.id=ent.sectionId")
             ->filterWhere([
                 "iso.userId" => $userId,
                 "ent.sectionId" => $sectionId
@@ -225,12 +227,27 @@ class IsolateService extends Component
 
     public function canUserAccessEntry(int $userId, int $entryId)
     {
+        $entry = Entry::findOne([ "id" => $entryId ]);
+
+        // Is the user restricted to entries within this section?
+        $sectionRecords = Isolate::$plugin->isolateService->getUserEntries($userId, $entry->section->id);
+
+        // If not, then the user can edit this entry
+        if (count($sectionRecords) === 0)
+        {
+            return true;
+        }
+
         $record = IsolateRecord::findOne([
             "userId" => $userId,
-            "entryId" => $entryId
+            "entryId" => $entry->id
         ]);
 
-        return $record !== null;
+        if ($record === null) {
+            return false;
+        }
+
+        return true;
     }
 
     public function getEntryFromUrl()
