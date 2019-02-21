@@ -172,7 +172,7 @@ class IsolateService extends Component
      * Is the user isolated?
      *
      * @param integer $userId
-     * @return bool
+     * @return boolean
      */
     public function isUserIsolated(int $userId)
     {
@@ -198,6 +198,11 @@ class IsolateService extends Component
         }
     }
 
+    /**
+     * Is the user currently viewing the Entries area?
+     *
+     * @return boolean
+     */
     public function isEntriesArea()
     {
         if (
@@ -211,6 +216,11 @@ class IsolateService extends Component
         return false;
     }
 
+    /**
+     * Is the user currently viewing an Entry?
+     *
+     * @return boolean
+     */
     public function isEntry()
     {
         if (
