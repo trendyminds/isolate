@@ -59,8 +59,8 @@
     <input type="hidden" name="userId" value="{{user.id}}">
   {% endif %}
 
-  {% if sections is defined %}
-    {% for section in sections %}
+  {% if userSections is defined %}
+    {% for section in userSections %}
       {% set entries = craft.entries.section(section.handle).limit(NULL).all() %}
 
       <section class="isolate__section" data-isolate-group="{{section.name}}" data-enabled="{{craft.isolate.getUserEntries(user.id, section.id) | length > 0 ? 'true' : 'false'}}">
@@ -107,7 +107,7 @@
     {% endfor %}
   {% endif %}
 
-  {% if sections is not defined %}
+  {% if userSections is not defined %}
     {% include "isolate/_partials/empty-frame" %}
   {% endif %}
 {% endset %}
