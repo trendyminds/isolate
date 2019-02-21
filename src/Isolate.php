@@ -10,14 +10,11 @@
 
 namespace trendyminds\isolate;
 
-use trendyminds\isolate\services\IsolateService as IsolateServiceService;
 use trendyminds\isolate\variables\IsolateVariable;
 use trendyminds\isolate\models\Settings;
 
 use Craft;
 use craft\base\Plugin;
-use craft\services\Plugins;
-use craft\events\PluginEvent;
 use craft\web\UrlManager;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\twig\variables\UserSession;
@@ -74,6 +71,7 @@ class Isolate extends Plugin
                 // Only apply assets if user is logged in
                 if ($userSession->isLoggedIn()) {
                     Isolate::$plugin->isolateService->includeIsolatedAssets();
+                    Isolate::$plugin->isolateService->checkUserAccess();
                 }
 
                 $event->rules = array_merge($event->rules, [

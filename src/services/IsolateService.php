@@ -17,8 +17,10 @@ use trendyminds\isolate\assetbundles\Isolate\IsolateAsset;
 use Craft;
 use craft\base\Component;
 use craft\elements\User;
-use craft\elements\Entry;
 use craft\db\Query;
+use craft\web\twig\variables\Request;
+use yii\base\Exception;
+use yii\web\ForbiddenHttpException;
 
 /**
  * @author    TrendyMinds
@@ -189,5 +191,100 @@ class IsolateService extends Component
         {
             Craft::$app->getView()->registerAssetBundle(IsolateAsset::class);
         }
+    }
+
+    public function isEntriesArea()
+    {
+        $request = new Request();
+
+        if (
+            $request->getSegment(1) === "entries" &&
+            $request->getSegment(2) !== "" &&
+            $request->getSegment(3) === null
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function isEntry()
+    {
+        $request = new Request();
+
+        if (
+            $request->getSegment(1) === "entries" &&
+            $request->getSegment(2) !== "" &&
+            $request->getSegment(3) !== ""
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function canUserAccessEntry(int $userId, int $entryId)
+    {
+        $record = IsolateRecord::findOne([
+            "userId" => $userId,
+            "entryId" => $entryId
+        ]);
+
+        return $record !== null;
+    }
+
+    public function getEntryFromUrl()
+    {
+        $request = new Request();
+
+        preg_match("/^\d*/", $request->getSegment(3), $matches);
+
+        return $matches[0];
+    }
+
+    public function isUserIsolated(int $userId)
+    {
+        $record = IsolateRecord::findOne([
+            "userId" => $userId
+        ]);
+
+        return $record !== null;
+    }
+
+    public function checkUserAccess()
+    {
+        $currentUserId = Craft::$app->getUser()->id;
+
+        // Is this user managed by Isolate?
+        // If not, don't bother checking anything else
+        if (!Isolate::$plugin->isolateService->isUserIsolated($currentUserId))
+        {
+            return true;
+        }
+
+        // Prevent users from accessing the Entries section
+        if (Isolate::$plugin->isolateService->isEntriesArea())
+        {
+            Isolate::$plugin->isolateService->restrictUser();
+        }
+
+        // Are we in an entry page?
+        if (Isolate::$plugin->isolateService->isEntry())
+        {
+            $entryId = Isolate::$plugin->isolateService->getEntryFromUrl();
+
+            // Can this user access this entry?
+            if (!Isolate::$plugin->isolateService->canUserAccessEntry($currentUserId, $entryId))
+            {
+                Isolate::$plugin->isolateService->restrictUser();
+            }
+        }
+
+        return true;
+    }
+
+    public function restrictUser()
+    {
+        throw new ForbiddenHttpException('User is not permitted to perform this action');
     }
 }
