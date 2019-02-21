@@ -177,11 +177,11 @@ class IsolateService extends Component
     public function isUserIsolated(int $userId)
     {
         // If this user is assigned an entry then this user is isolated
-        $hasEntry = IsolateRecord::findOne([
+        $userHasIsolateRecord = IsolateRecord::findOne([
             "userId" => $userId
         ]);
 
-        if ($hasEntry) {
+        if ($userHasIsolateRecord) {
             return true;
         }
 
