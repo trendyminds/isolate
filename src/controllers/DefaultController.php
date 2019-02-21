@@ -84,8 +84,7 @@ class DefaultController extends Controller
             "id" => $userId
         ]);
 
-        $sections = Isolate::$plugin->isolateService->getUserSections($user->id);
-        $assignedEntries = Isolate::$plugin->isolateService->getUserEntries($user->id);
+        $sections = Isolate::$plugin->isolateService->getAssignedSections($user->id);
 
         return $this->renderTemplate('isolate/users', [
             "id" => $user->id,
