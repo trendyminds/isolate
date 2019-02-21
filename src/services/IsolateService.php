@@ -198,6 +198,13 @@ class IsolateService extends Component
         }
     }
 
+    /**
+     * Checks if a given user has the permissions to access an entry
+     *
+     * @param integer $userId
+     * @param integer $entryId
+     * @return boolean
+     */
     public function canUserAccessEntry(int $userId, int $entryId)
     {
         $entry = Entry::findOne([ "id" => $entryId ]);
