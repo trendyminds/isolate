@@ -19,8 +19,6 @@ use craft\base\Component;
 use craft\elements\User;
 use craft\elements\Entry;
 use craft\db\Query;
-use craft\web\twig\variables\Request;
-use yii\base\Exception;
 use yii\web\ForbiddenHttpException;
 
 /**
@@ -197,12 +195,10 @@ class IsolateService extends Component
 
     public function isEntriesArea()
     {
-        $request = new Request();
-
         if (
-            $request->getSegment(1) === "entries" &&
-            $request->getSegment(2) !== "" &&
-            $request->getSegment(3) === null
+            Craft::$app->request->getSegment(1) === "entries" &&
+            Craft::$app->request->getSegment(2) !== "" &&
+            Craft::$app->request->getSegment(3) === null
         ) {
             return true;
         }
@@ -212,12 +208,10 @@ class IsolateService extends Component
 
     public function isEntry()
     {
-        $request = new Request();
-
         if (
-            $request->getSegment(1) === "entries" &&
-            $request->getSegment(2) !== "" &&
-            $request->getSegment(3) !== ""
+            Craft::$app->request->getSegment(1) === "entries" &&
+            Craft::$app->request->getSegment(2) !== "" &&
+            Craft::$app->request->getSegment(3) !== ""
         ) {
             return true;
         }
@@ -250,11 +244,11 @@ class IsolateService extends Component
         return true;
     }
 
-    public function getEntryFromUrl()
+    public function getEntryIdFromUrl()
     {
-        $request = new Request();
+        $entryUri = Craft::$app->request->getSegment(3);
 
-        preg_match("/^\d*/", $request->getSegment(3), $matches);
+        preg_match("/^\d*/", $entryUri, $matches);
 
         return $matches[0];
     }
@@ -288,7 +282,7 @@ class IsolateService extends Component
         // Are we in an entry page?
         if (Isolate::$plugin->isolateService->isEntry())
         {
-            $entryId = Isolate::$plugin->isolateService->getEntryFromUrl();
+            $entryId = Isolate::$plugin->isolateService->getEntryIdFromUrl();
 
             // Can this user access this entry?
             if (!Isolate::$plugin->isolateService->canUserAccessEntry($currentUserId, $entryId))
