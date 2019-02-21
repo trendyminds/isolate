@@ -23,12 +23,6 @@ class IsolateVariable
 {
     // Public Methods
     // =========================================================================
-
-    public function sidebarLabel()
-    {
-        return Isolate::$plugin->settings->sidebarLabel;
-    }
-
     public function users()
     {
         return Isolate::$plugin->isolateService->getUsers();
