@@ -32,14 +32,14 @@
     <ul>
       <li class="heading"><span>Users</span></li>
 
-      {% for user in craft.isolate.users %}
+      {% for navUser in craft.isolate.users %}
         {% set class = "" %}
 
-        {% if id is defined and id == user.id %}
+        {% if user.id is defined and user.id == navUser.id %}
           {% set class = "sel" %}
         {% endif %}
 
-        <li><a href="{{url('isolate/users/' ~ user.id)}}" class="{{class}}">{{user.name}}</a></li>
+        <li><a href="{{url('isolate/users/' ~ navUser.id)}}" class="{{class}}">{{navUser.name}}</a></li>
       {% endfor %}
     </ul>
   </nav>
@@ -48,7 +48,7 @@
 {% if user is defined %}
   {% set assignedEntries = [] %}
 
-  {% for permission in craft.isolate.getUserEntries(id) %}
+  {% for permission in craft.isolate.getUserEntries(user.id) %}
     {% set assignedEntries = assignedEntries | merge([permission.entryId]) %}
   {% endfor %}
 {% endif %}
@@ -56,14 +56,14 @@
 {% set content %}
   {% if user is defined %}
     <input type="hidden" name="action" value="isolate/default/save-user">
-    <input type="hidden" name="userId" value="{{id}}">
+    <input type="hidden" name="userId" value="{{user.id}}">
   {% endif %}
 
   {% if sections is defined %}
     {% for section in sections %}
       {% set entries = craft.entries.section(section.handle).limit(NULL).all() %}
 
-      <section class="isolate__section" data-isolate-group="{{section.name}}" data-enabled="{{craft.isolate.getUserEntries(id, section.id) | length > 0 ? 'true' : 'false'}}">
+      <section class="isolate__section" data-isolate-group="{{section.name}}" data-enabled="{{craft.isolate.getUserEntries(user.id, section.id) | length > 0 ? 'true' : 'false'}}">
         <div class="isolate__section-header">
           <h2 class="isolate__section-name">{{section.name}}</h2>
           <a href="#" class="isolate__section-toggle icon" data-toggle="manage-{{section.handle}}">
