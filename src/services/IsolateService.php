@@ -11,6 +11,7 @@
 namespace trendyminds\isolate\services;
 
 use trendyminds\isolate\Isolate;
+use trendyminds\isolate\services\AuthenticationService;
 use trendyminds\isolate\records\IsolateRecord;
 use trendyminds\isolate\assetbundles\Isolate\IsolateAsset;
 
@@ -198,42 +199,6 @@ class IsolateService extends Component
         }
     }
 
-    /**
-     * Is the user currently viewing the Entries area?
-     *
-     * @return boolean
-     */
-    public function isEntriesArea()
-    {
-        if (
-            Craft::$app->request->getSegment(1) === "entries" &&
-            Craft::$app->request->getSegment(2) !== "" &&
-            Craft::$app->request->getSegment(3) === null
-        ) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Is the user currently viewing an Entry?
-     *
-     * @return boolean
-     */
-    public function isEntry()
-    {
-        if (
-            Craft::$app->request->getSegment(1) === "entries" &&
-            Craft::$app->request->getSegment(2) !== "" &&
-            Craft::$app->request->getSegment(3) !== ""
-        ) {
-            return true;
-        }
-
-        return false;
-    }
-
     public function canUserAccessEntry(int $userId, int $entryId)
     {
         $entry = Entry::findOne([ "id" => $entryId ]);
@@ -270,28 +235,29 @@ class IsolateService extends Component
 
     public function checkUserAccess()
     {
-        $currentUserId = Craft::$app->getUser()->id;
+        $authenticateCheck = new AuthenticationService();
+        $currentUser = Craft::$app->getUser()->id;
 
         // Is this user managed by Isolate?
         // If not, don't bother checking anything else
-        if (!Isolate::$plugin->isolateService->isUserIsolated($currentUserId))
+        if (!Isolate::$plugin->isolateService->isUserIsolated($currentUser->id))
         {
             return true;
         }
 
         // Prevent users from accessing the Entries section
-        if (Isolate::$plugin->isolateService->isEntriesArea())
+        if ($authenticateCheck->isEntriesArea())
         {
             Isolate::$plugin->isolateService->showAuthError();
         }
 
         // Are we in an entry page?
-        if (Isolate::$plugin->isolateService->isEntry())
+        if ($authenticateCheck->isEntry())
         {
             $entryId = Isolate::$plugin->isolateService->getEntryIdFromUrl();
 
             // Can this user access this entry?
-            if (!Isolate::$plugin->isolateService->canUserAccessEntry($currentUserId, $entryId))
+            if (!Isolate::$plugin->isolateService->canUserAccessEntry($currentUser->id, $entryId))
             {
                 Isolate::$plugin->isolateService->showAuthError();
             }
