@@ -20,7 +20,6 @@ use craft\base\Component;
 use craft\elements\User;
 use craft\elements\Entry;
 use craft\db\Query;
-use yii\web\ForbiddenHttpException;
 
 /**
  * @author    TrendyMinds
@@ -248,7 +247,7 @@ class IsolateService extends Component
         // Prevent users from accessing the Entries section
         if ($authenticateCheck->isUserInEntriesArea())
         {
-            Isolate::$plugin->isolateService->showAuthError();
+            $authenticateCheck->displayError();
         }
 
         // Are we in an entry page?
@@ -259,20 +258,10 @@ class IsolateService extends Component
             // Can this user access this entry?
             if (!Isolate::$plugin->isolateService->canUserAccessEntry($currentUser->id, $entryId))
             {
-                Isolate::$plugin->isolateService->showAuthError();
+                $authenticateCheck->displayError();
             }
         }
 
         return true;
-    }
-
-    /**
-     * Show authorization error to user
-     *
-     * @return ForbiddenHttpException
-     */
-    public function showAuthError()
-    {
-        throw new ForbiddenHttpException('User is not permitted to perform this action');
     }
 }

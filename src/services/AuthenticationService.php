@@ -14,6 +14,7 @@ use trendyminds\isolate\Isolate;
 
 use Craft;
 use craft\base\Component;
+use yii\web\ForbiddenHttpException;
 
 /**
  * @author    TrendyMinds
@@ -56,5 +57,15 @@ class AuthenticationService extends Component
         }
 
         return false;
+    }
+
+    /**
+     * Show authorization error to user
+     *
+     * @return ForbiddenHttpException
+     */
+    public function displayError()
+    {
+        throw new ForbiddenHttpException('User is not permitted to perform this action');
     }
 }
