@@ -127,23 +127,6 @@ class Isolate extends Plugin
             $item['label'] = $this->getSidebarLabel();
         }
 
-        /**
-         * If a user can't assign entries then they
-         *   1. Don't need to see any of the subnav items (the nav item goes to dashboard by default)
-         *   2. They can't see the users area
-         */
-        if (Craft::$app->user->checkPermission('isolate:assign')) {
-            $item['subnav']['dashboard'] = [
-                'label' => 'Dashboard',
-                'url' => 'isolate/dashboard'
-            ];
-
-            $item['subnav']['users'] = [
-                'label' => 'Users',
-                'url' => 'isolate/users'
-            ];
-        }
-
         return $item;
     }
 

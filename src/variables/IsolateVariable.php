@@ -28,6 +28,11 @@ class IsolateVariable
         return Isolate::$plugin->isolateService->getUsers();
     }
 
+    public function isUserIsolated(int $userId)
+    {
+        return Isolate::$plugin->isolateService->isUserIsolated($userId);
+    }
+
     public function getSectionPermissions(int $userId)
     {
         return Isolate::$plugin->isolateService->getSectionPermissions($userId);

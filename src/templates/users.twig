@@ -22,7 +22,7 @@
 
 {% set selectedSubnavItem = "users" %}
 
-{% set title = user is not defined ? "Users" : user.name %}
+{% set title = user is not defined ? "Isolate" : user.name %}
 {% set fullPageForm = user is defined ? true : false %}
 
 {% set pluginCpUrl = url('isolate') %}

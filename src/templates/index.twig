@@ -13,7 +13,13 @@
  */
 #}
 
-{% if craft.app.request.getSegment(2) != "dashboard" %}
+{# If the current user isn't isolated direct them to the permission area #}
+{% if not craft.isolate.isUserIsolated(currentUser.id) %}
+  {% redirect "isolate/users" %}
+{% endif %}
+
+{# Redirect isolated users to the dashboard URL #}
+{% if craft.isolate.isUserIsolated(currentUser.id) and craft.app.request.getSegment(2) != "dashboard" %}
   {% redirect "isolate/dashboard" %}
 {% endif %}
 
