@@ -58,7 +58,7 @@
     <input type="hidden" name="action" value="isolate/default/save-user">
     <input type="hidden" name="userId" value="{{user.id}}">
 
-    {% for section in craft.sections.getAllSections %}
+    {% for section in craft.app.sections.allSections %}
       {% set userCanEdit = user.can("editEntries:" ~ section.uid) %}
 
       {% if section.type != "single" %}

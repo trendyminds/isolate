@@ -26,7 +26,7 @@
 
 {% set pluginCpUrl = url('isolate') %}
 
-{% set sectionGroup = craft.sections.getEditableSections() | group('type') %}
+{% set sectionGroup = craft.app.sections.editableSections | group('type') %}
 
 {% block sidebar %}
   <nav>
