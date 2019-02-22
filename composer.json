@@ -2,7 +2,7 @@
     "name": "trendyminds/isolate",
     "description": "Force users to only access a subset of your entries",
     "type": "craft-plugin",
-    "version": "1.0.0",
+    "version": "0.9.1",
     "keywords": [
         "craft",
         "cms",
