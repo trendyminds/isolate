@@ -32,11 +32,22 @@
   <nav>
     <ul>
       {% for type, sections in sectionGroup %}
-        <li class="heading"><span>{{type | ucfirst}}s</span></li>
+        {% if type == "single" %}
+          <li class="heading"><span>Singles</span></li>
+          {% for section in sections %}
+            {% for entry in craft.entries.section(section.handle).all() %}
+              <li><a href="{{entry.cpEditUrl}}">{{section.name}}</a></li>
+            {% endfor %}
+          {% endfor %}
+        {% endif %}
 
-        {% for section in sections %}
-          <li><a href="{{url('isolate/dashboard/' ~ section.handle)}}">{{section.name}}</a></li>
-        {% endfor %}
+        {% if type != "single" %}
+          <li class="heading"><span>{{type | ucfirst}}s</span></li>
+
+          {% for section in sections %}
+            <li><a href="{{url('isolate/dashboard/' ~ section.handle)}}">{{section.name}}</a></li>
+          {% endfor %}
+        {% endif %}
       {% endfor %}
     </ul>
   </nav>
