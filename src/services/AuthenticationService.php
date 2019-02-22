@@ -51,7 +51,7 @@ class AuthenticationService extends Component
         if (
             Craft::$app->request->getSegment(1) === "entries" &&
             Craft::$app->request->getSegment(2) !== "" &&
-            Craft::$app->request->getSegment(3) !== ""
+            Craft::$app->request->getSegment(3) !== "new"
         ) {
             return true;
         }
