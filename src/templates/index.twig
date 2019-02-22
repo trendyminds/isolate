@@ -53,7 +53,7 @@
         </tr>
       </thead>
       <tbody>
-        {% for entry in craft.entries.section(craft.app.request.getSegment(3)).all() %}
+        {% for entry in craft.isolate.getUserEntries(currentUser.id, craft.app.request.getSegment(3)) %}
           <tr>
             <td><a href="{{entry.cpEditUrl}}">{{entry.title}}</a></td>
             <td>{{entry.postDate | date("n/j/Y")}}</td>

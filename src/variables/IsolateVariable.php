@@ -28,8 +28,18 @@ class IsolateVariable
         return Isolate::$plugin->isolateService->getUsers();
     }
 
-    public function getUserEntries(int $userId, int $sectionId = null)
+    public function getSectionPermissions(int $userId)
     {
-        return Isolate::$plugin->isolateService->getUserEntries($userId, $sectionId);
+        return Isolate::$plugin->isolateService->getSectionPermissions($userId);
+    }
+
+    public function getUserEntries(int $userId, string $sectionHandle = null)
+    {
+        return Isolate::$plugin->isolateService->getUserEntries($userId, $sectionHandle);
+    }
+
+    public function userIsolatedFromSection(int $userId, string $sectionHandle)
+    {
+        return Isolate::$plugin->isolateService->userIsolatedFromSection($userId, $sectionHandle);
     }
 }
