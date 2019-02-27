@@ -43,6 +43,11 @@ class IsolateVariable
         return Isolate::$plugin->isolateService->getUserEntries($userId, $sectionHandle);
     }
 
+    public function getEntries(string $sectionHandle = null)
+    {
+        return Isolate::$plugin->isolateService->getEntries($sectionHandle);
+    }
+
     public function userIsolatedFromSection(int $userId, string $sectionHandle)
     {
         return Isolate::$plugin->isolateService->userIsolatedFromSection($userId, $sectionHandle);

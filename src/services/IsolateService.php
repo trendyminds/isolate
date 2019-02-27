@@ -51,6 +51,26 @@ class IsolateService extends Component
     }
 
     /**
+     * Get all entries (and by section)
+     * A more performant way of pulling *all* entries from Craft — limited to id, title and section handle
+     *
+     * @param string $sectionHandle
+     * @return array
+     */
+    public function getEntries(string $sectionHandle = null)
+    {
+        $query = new Query();
+        $entries = $query->select(["ent.id", "con.title", "sec.handle"])
+            ->from("{{%entries}} ent")
+            ->leftJoin("{{%content}} con", "con.elementId=ent.id")
+            ->leftJoin("{{%sections}} sec", "sec.id=ent.sectionId")
+            ->filterWhere(['sec.handle' => $sectionHandle])
+            ->all();
+
+        return $entries;
+    }
+
+    /**
      * Returns all (or section-specific) entries that a user has access to
      *
      * @param integer $userId
