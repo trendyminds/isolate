@@ -66,26 +66,32 @@ class DefaultController extends Controller
         $this->requirePostRequest();
 
         $userId = Craft::$app->getRequest()->getBodyParam("userId");
+        $sectionId = Craft::$app->getRequest()->getBodyParam("sectionId");
         $entries = Craft::$app->getRequest()->getBodyParam("entries");
 
         if (!$entries) {
             $entries = [];
         }
 
-        Isolate::$plugin->isolateService->modifyRecord($userId, $entries);
+        Isolate::$plugin->isolateService->modifyRecords(
+            $userId,
+            $sectionId,
+            $entries
+        );
     }
 
     /**
      * @return mixed
      */
-    public function actionGetUser(int $userId)
+    public function actionGetUser(int $userId, string $sectionHandle = null)
     {
         $user = User::findOne([
             "id" => $userId
         ]);
 
         return $this->renderTemplate('isolate/users', [
-            "user" => $user
+            "user" => $user,
+            "section" => Craft::$app->sections->getSectionByHandle($sectionHandle)
         ]);
     }
 }

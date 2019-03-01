@@ -74,7 +74,8 @@ class Isolate extends Plugin
                 $event->rules = array_merge($event->rules, [
                     "isolate/dashboard" => "isolate/default/index",
                     "isolate/dashboard/<sectionHandle:{handle}>" => "isolate/default/index",
-                    "isolate/users/<userId:\d+>" => "isolate/default/get-user"
+                    "isolate/users/<userId:\d+>" => "isolate/default/get-user",
+                    "isolate/users/<userId:\d+>/<sectionHandle:{handle}>" => "isolate/default/get-user"
                 ]);
             }
         );
