@@ -29,7 +29,7 @@
     <ul>
       {% for sec in craft.app.sections.getAllSections %}
         <li>
-          <a href='{{url("isolate/users/#{user.id}/#{sec.handle}")}}' {% if section == sec.handle %}class="sel"{% endif %}>
+          <a href='{{url("isolate/users/#{user.id}/#{sec.handle}")}}' {% if section.handle == sec.handle %}class="sel"{% endif %}>
             {{sec.name}}
           </a>
         </li>
