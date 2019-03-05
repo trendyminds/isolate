@@ -36,7 +36,8 @@ class DefaultController extends Controller
         'index',
         'users',
         'saveUser',
-        'getUser'
+        'getUsers',
+        'getUser',
     ];
 
     // Public Methods
@@ -83,15 +84,29 @@ class DefaultController extends Controller
     /**
      * @return mixed
      */
+    public function actionGetUsers()
+    {
+        return $this->renderTemplate('isolate/users');
+    }
+
+    /**
+     * @return mixed
+     */
     public function actionGetUser(int $userId, string $sectionHandle = null)
     {
         $user = User::findOne([
             "id" => $userId
         ]);
 
-        return $this->renderTemplate('isolate/users', [
+        $section = null;
+
+        if (isset($sectionHandle)) {
+            $section = Craft::$app->sections->getSectionByHandle($sectionHandle);
+        }
+
+        return $this->renderTemplate('isolate/users/_user', [
             "user" => $user,
-            "section" => Craft::$app->sections->getSectionByHandle($sectionHandle)
+            "section" => $section
         ]);
     }
 }
