@@ -48,7 +48,7 @@
     <tbody>
       {% for user in craft.isolate.users(activeGroupId) %}
         <tr>
-          <td><span class="status {{user.isIsolated ? 'live' : 'disabled'}}"></span><a href='{{url("isolate/users/user/#{user.id}")}}'>{{user.name}}</a></td>
+          <td><span class="status {{user.isIsolated ? 'expired' : 'disabled'}}"></span><a href='{{url("isolate/users/user/#{user.id}")}}'>{{user.name}}</a></td>
           <td>{{user.fullName}}</td>
           <td>{{user.email}}</td>
           <td>{{user.dateCreated | date('short')}}</td>

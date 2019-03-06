@@ -73,6 +73,35 @@ class IsolateService extends Component
         return $data;
     }
 
+    public function getUserSections(int $userId)
+    {
+        $data = [];
+        $isolatedSections = [];
+
+        $sections = Craft::$app->sections->getAllSections();
+
+        $isolateEntries = IsolateRecord::findAll([
+            "userId" => $userId
+        ]);
+
+        foreach ($isolateEntries as $entry) {
+            $isolatedSections[] = $entry->sectionId;
+        }
+
+        $isolatedSections = array_values(array_unique($isolatedSections));
+
+        foreach ($sections as $section) {
+            $data[] = [
+                "id" => $section->id,
+                "name" => $section->name,
+                "handle" => $section->handle,
+                "isIsolated" => in_array($section->id, $isolatedSections),
+            ];
+        }
+
+        return $data;
+    }
+
     /**
      * Get all entries (and by section)
      * A more performant way of pulling *all* entries from Craft — limited to id, title and section handle

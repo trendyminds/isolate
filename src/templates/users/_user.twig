@@ -29,10 +29,10 @@
 {% block sidebar %}
   <nav>
     <ul>
-      {% for sec in craft.app.sections.getAllSections %}
+      {% for sec in craft.isolate.getUserSections(user.id) %}
         <li>
           <a href='{{url("isolate/users/user/#{user.id}/#{sec.handle}")}}' {% if section is defined and section and section.handle == sec.handle %}class="sel"{% endif %}>
-            {{sec.name}}
+            <span class="status {{sec.isIsolated ? 'expired' : 'disabled'}}"></span>{{sec.name}}
           </a>
         </li>
       {% endfor %}
