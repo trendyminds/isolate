@@ -33,7 +33,8 @@ class DefaultController extends Controller
      * @access protected
      */
     protected $allowAnonymous = [
-        'index',
+        'dashboard',
+        'settings',
         'users',
         'saveUser',
         'getUsers',
@@ -46,9 +47,19 @@ class DefaultController extends Controller
     /**
      * @return mixed
      */
-    public function actionIndex()
+    public function actionDashboard()
     {
-        return $this->renderTemplate('isolate/index');
+        return $this->renderTemplate('isolate/dashboard');
+    }
+
+    /**
+     * @return mixed
+     */
+    public function actionSettings()
+    {
+        return $this->renderTemplate('isolate/settings', [
+            "settings" => Isolate::$plugin->getSettings()
+        ]);
     }
 
     /**

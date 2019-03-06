@@ -17,6 +17,7 @@ use Craft;
 use craft\base\Plugin;
 use craft\web\UrlManager;
 use craft\web\twig\variables\CraftVariable;
+use craft\helpers\UrlHelper;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\services\UserPermissions;
@@ -72,8 +73,9 @@ class Isolate extends Plugin
                 }
 
                 $event->rules = array_merge($event->rules, [
-                    "isolate/dashboard" => "isolate/default/index",
-                    "isolate/dashboard/<sectionHandle:{handle}>" => "isolate/default/index",
+                    "isolate/settings" => "isolate/default/settings",
+                    "isolate/dashboard" => "isolate/default/dashboard",
+                    "isolate/dashboard/<sectionHandle:{handle}>" => "isolate/default/dashboard",
                     "isolate/users" => "isolate/default/get-users",
                     "isolate/users/group/<groupId:\d+>" => "isolate/default/get-users",
                     "isolate/users/user/<userId:\d+>" => "isolate/default/get-user",
@@ -155,6 +157,11 @@ class Isolate extends Plugin
         return $nav;
     }
 
+    public function getSettingsResponse()
+    {
+        Craft::$app->controller->redirect(UrlHelper::cpUrl('isolate/settings'));
+    }
+
     // Protected Methods
     // =========================================================================
 
@@ -164,18 +171,5 @@ class Isolate extends Plugin
     protected function createSettingsModel()
     {
         return new Settings();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function settingsHtml(): string
-    {
-        return Craft::$app->view->renderTemplate(
-            'isolate/settings',
-            [
-                'settings' => $this->getSettings()
-            ]
-        );
     }
 }
