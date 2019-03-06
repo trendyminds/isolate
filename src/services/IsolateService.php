@@ -42,13 +42,35 @@ class IsolateService extends Component
      */
     public function getUsers(int $groupId = null)
     {
+        $data = [];
+        $isolatedUsers = [];
+
         $users = User::find()
             ->admin(false)
             ->can("accessCp")
             ->groupId($groupId)
             ->all();
 
-        return $users;
+        $isolateEntries = IsolateRecord::find()->all();
+
+        foreach ($isolateEntries as $entry) {
+            $isolatedUsers[] = $entry->userId;
+        }
+
+        $isolatedUsers = array_values(array_unique($isolatedUsers));
+
+        foreach ($users as $user) {
+            $data[] = [
+                "id" => $user->id,
+                "name" => $user->name,
+                "fullName" => $user->fullName,
+                "email" => $user->email,
+                "dateCreated" => $user->dateCreated,
+                "isIsolated" => in_array($user->id, $isolatedUsers),
+            ];
+        }
+
+        return $data;
     }
 
     /**
