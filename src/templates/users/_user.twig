@@ -20,21 +20,18 @@
 {% do view.registerAssetBundle("trendyminds\\isolate\\assetbundles\\indexcpsection\\IndexCPSectionAsset") %}
 
 {% set title = user.name %}
+{% set selectedSubnavItem = "users" %}
 {% set fullPageForm = true %}
-
 {% set pluginCpUrl = url('isolate') %}
 
-{% set crumbs = [
-    { label: "Users", url: url('isolate/users') }
-  ]
-%}
+{% set crumbs = [ { label: "Users", url: url('isolate/users') } ] %}
 
 {% block sidebar %}
   <nav>
     <ul>
       {% for sec in craft.app.sections.getAllSections %}
         <li>
-          <a href='{{url("isolate/users/#{user.id}/#{sec.handle}")}}' {% if section is defined and section and section.handle == sec.handle %}class="sel"{% endif %}>
+          <a href='{{url("isolate/users/user/#{user.id}/#{sec.handle}")}}' {% if section is defined and section and section.handle == sec.handle %}class="sel"{% endif %}>
             {{sec.name}}
           </a>
         </li>

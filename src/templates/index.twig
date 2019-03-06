@@ -29,9 +29,7 @@
 {% do view.registerAssetBundle("trendyminds\\isolate\\assetbundles\\indexcpsection\\IndexCPSectionAsset") %}
 
 {% set title = "Dashboard" %}
-
 {% set pluginCpUrl = url('isolate') %}
-
 {% set sectionGroup = craft.app.sections.editableSections | group('type') %}
 
 {% block actionButton %}

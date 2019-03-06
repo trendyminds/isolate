@@ -23,9 +23,9 @@ class IsolateVariable
 {
     // Public Methods
     // =========================================================================
-    public function users()
+    public function users(int $groupId = null)
     {
-        return Isolate::$plugin->isolateService->getUsers();
+        return Isolate::$plugin->isolateService->getUsers($groupId);
     }
 
     public function isUserIsolated(int $userId)

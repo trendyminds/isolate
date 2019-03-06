@@ -40,11 +40,12 @@ class IsolateService extends Component
      *
      * @return array
      */
-    public function getUsers()
+    public function getUsers(int $groupId = null)
     {
         $users = User::find()
             ->admin(false)
             ->can("accessCp")
+            ->groupId($groupId)
             ->all();
 
         return $users;

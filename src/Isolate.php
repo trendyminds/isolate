@@ -75,8 +75,9 @@ class Isolate extends Plugin
                     "isolate/dashboard" => "isolate/default/index",
                     "isolate/dashboard/<sectionHandle:{handle}>" => "isolate/default/index",
                     "isolate/users" => "isolate/default/get-users",
-                    "isolate/users/<userId:\d+>" => "isolate/default/get-user",
-                    "isolate/users/<userId:\d+>/<sectionHandle:{handle}>" => "isolate/default/get-user"
+                    "isolate/users/group/<groupId:\d+>" => "isolate/default/get-users",
+                    "isolate/users/user/<userId:\d+>" => "isolate/default/get-user",
+                    "isolate/users/user/<userId:\d+>/<sectionHandle:{handle}>" => "isolate/default/get-user"
                 ]);
             }
         );
@@ -120,16 +121,38 @@ class Isolate extends Plugin
 
     public function getCpNavItem()
     {
-        $item = parent::getCpNavItem();
+        $subnav = [];
+        $nav = parent::getCpNavItem();
 
         /**
          * If a user is assigned entries use the display name for the sidebar label
          */
-        if (!Craft::$app->user->checkPermission('isolate:assign')) {
-            $item['label'] = $this->getSidebarLabel();
-        }
+        // if (!Craft::$app->user->checkPermission('isolate:assign')) {
+        //     $items[] = [
+        //         "label" => $this->getSidebarLabel()
+        //     ];
+        // }
 
-        return $item;
+        $subnav['dashboard'] = [
+            "label" => "Dashboard",
+            "url" => "isolate/dashboard"
+        ];
+
+        $subnav['users'] = [
+            "label" => "Users",
+            "url" => "isolate/users"
+        ];
+
+        $subnav['settings'] = [
+            "label" => "Settings",
+            "url" => "isolate/settings"
+        ];
+
+        $nav = array_merge($nav, [
+            'subnav' => $subnav,
+        ]);
+
+        return $nav;
     }
 
     // Protected Methods

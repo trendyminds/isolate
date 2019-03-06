@@ -19,14 +19,41 @@
 
 {% do view.registerAssetBundle("trendyminds\\isolate\\assetbundles\\indexcpsection\\IndexCPSectionAsset") %}
 
-{% set title = "Users" %}
-
+{% set title = activeGroupId ? userGroup.name : "Users" %}
+{% set selectedSubnavItem = "users" %}
 {% set pluginCpUrl = url('isolate') %}
 
+{% set sidebar %}
+  <nav>
+    <ul>
+      <li><a class="{{craft.app.request.getSegment(4) == "" ? 'sel' : ''}}" href='{{url("isolate/users")}}'>All users</a></li>
+      <li class="heading"><span>Groups</span></li>
+      {% for group in craft.app.userGroups.getAllGroups %}
+        <li><a class="{{activeGroupId == group.id ? 'sel' : ''}}" href='{{url("isolate/users/group/#{group.id}")}}'>{{group.name}}</a></li>
+      {% endfor %}
+    </ul>
+  </nav>
+{% endset %}
+
 {% set content %}
-  <ul>
-    {% for user in craft.isolate.users %}
-      <li><a href='{{url("isolate/users/#{user.id}")}}'>{{user.name}}</a></li>
-    {% endfor %}
-  </ul>
+  <table class="data fullwidth collapsible">
+    <thead>
+      <tr>
+        <th>User</th>
+        <th>Full Name</th>
+        <th>Email</th>
+        <th>Date Created</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in craft.isolate.users(activeGroupId) %}
+        <tr>
+          <td><a href='{{url("isolate/users/user/#{user.id}")}}'>{{user.name}}</a></td>
+          <td>{{user.fullName}}</td>
+          <td>{{user.email}}</td>
+          <td>{{user.dateCreated | date('short')}}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 {% endset %}

@@ -84,9 +84,20 @@ class DefaultController extends Controller
     /**
      * @return mixed
      */
-    public function actionGetUsers()
+    public function actionGetUsers(int $groupId = null)
     {
-        return $this->renderTemplate('isolate/users');
+        $userGroup = null;
+        $activeGroupId = null;
+
+        if (isset($groupId)) {
+            $userGroup = Craft::$app->userGroups->getGroupById($groupId);
+            $activeGroupId = $userGroup->id;
+        }
+
+        return $this->renderTemplate('isolate/users', [
+            "userGroup" => $userGroup,
+            "activeGroupId" => $activeGroupId
+        ]);
     }
 
     /**
