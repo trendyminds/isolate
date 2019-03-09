@@ -23,10 +23,7 @@
 {% set sectionGroup = craft.app.sections.editableSections | group('type') %}
 
 {% block actionButton %}
-  {%
-    if craft.isolate.isUserIsolated(currentUser.id) and
-    craft.app.request.getSegment(3)
-  %}
+  {% if craft.app.request.getSegment(3) %}
     {% set section = craft.app.sections.getSectionByHandle(craft.app.request.getSegment(3)) %}
 
     {% if currentUser.can("createEntries:" ~ section.uid) %}
@@ -61,7 +58,7 @@
 {% endblock %}
 
 {% block content %}
-  {% if craft.app.request.getSegment(3) %}
+  {# {% if craft.app.request.getSegment(3) %}
     {% set section = craft.app.sections.getSectionByHandle(craft.app.request.getSegment(3)) %}
     <table class="data fullwidth collapsible">
       <thead>
@@ -81,7 +78,7 @@
         {% endfor %}
       </tbody>
     </table>
-  {% endif %}
+  {% endif %} #}
 
   {% if not craft.app.request.getSegment(3) %}
     {% include "isolate/_partials/empty-frame" %}
