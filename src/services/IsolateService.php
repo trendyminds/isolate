@@ -13,14 +13,12 @@ namespace trendyminds\isolate\services;
 use trendyminds\isolate\Isolate;
 use trendyminds\isolate\services\AuthenticationService;
 use trendyminds\isolate\records\IsolateRecord;
-use trendyminds\isolate\assetbundles\Isolate\IsolateAsset;
 
 use Craft;
 use craft\base\Component;
 use craft\elements\User;
 use craft\elements\Entry;
 use craft\db\Query;
-use yii\helpers\ArrayHelper;
 
 /**
  * @author    TrendyMinds
@@ -212,21 +210,6 @@ class IsolateService extends Component
         }
 
         return false;
-    }
-
-    /**
-     * Injects the Isolated CSS and JS files
-     *
-     * @return void
-     */
-    public function includeIsolatedAssets()
-    {
-        $currentUserId = Craft::$app->getUser()->id;
-
-        if (Isolate::$plugin->isolateService->isUserIsolated($currentUserId))
-        {
-            Craft::$app->getView()->registerAssetBundle(IsolateAsset::class);
-        }
     }
 
     /**
