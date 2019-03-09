@@ -33,15 +33,7 @@ class DefaultController extends Controller
      *         The actions must be in 'kebab-case'
      * @access protected
      */
-    protected $allowAnonymous = [
-        'index',
-        'dashboard',
-        'settings',
-        'users',
-        'saveUser',
-        'getUsers',
-        'getUser',
-    ];
+    protected $allowAnonymous = [];
 
     // Public Methods
     // =========================================================================
@@ -75,76 +67,6 @@ class DefaultController extends Controller
     {
         return $this->renderTemplate('isolate/settings', [
             "settings" => Isolate::$plugin->getSettings()
-        ]);
-    }
-
-    /**
-     * @return mixed
-     */
-    public function actionUsers()
-    {
-        return $this->renderTemplate('isolate/users');
-    }
-
-    /**
-     * @return mixed
-     */
-    public function actionSaveUser()
-    {
-        $this->requirePostRequest();
-
-        $userId = Craft::$app->getRequest()->getBodyParam("userId");
-        $sectionId = Craft::$app->getRequest()->getBodyParam("sectionId");
-        $entries = Craft::$app->getRequest()->getBodyParam("entries");
-
-        if (!$entries) {
-            $entries = [];
-        }
-
-        Isolate::$plugin->isolateService->modifyRecords(
-            $userId,
-            $sectionId,
-            $entries
-        );
-    }
-
-    /**
-     * @return mixed
-     */
-    public function actionGetUsers(int $groupId = null)
-    {
-        $userGroup = null;
-        $activeGroupId = null;
-
-        if (isset($groupId)) {
-            $userGroup = Craft::$app->userGroups->getGroupById($groupId);
-            $activeGroupId = $userGroup->id;
-        }
-
-        return $this->renderTemplate('isolate/users', [
-            "userGroup" => $userGroup,
-            "activeGroupId" => $activeGroupId
-        ]);
-    }
-
-    /**
-     * @return mixed
-     */
-    public function actionGetUser(int $userId, string $sectionHandle = null)
-    {
-        $user = User::findOne([
-            "id" => $userId
-        ]);
-
-        $section = null;
-
-        if (isset($sectionHandle)) {
-            $section = Craft::$app->sections->getSectionByHandle($sectionHandle);
-        }
-
-        return $this->renderTemplate('isolate/users/_user', [
-            "user" => $user,
-            "section" => $section
         ]);
     }
 }

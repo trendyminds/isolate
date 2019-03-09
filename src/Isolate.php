@@ -77,10 +77,10 @@ class Isolate extends Plugin
                     "isolate/settings" => "isolate/default/settings",
                     "isolate/dashboard" => "isolate/default/dashboard",
                     "isolate/dashboard/<sectionHandle:{handle}>" => "isolate/default/dashboard",
-                    "isolate/users" => "isolate/default/get-users",
-                    "isolate/users/group/<groupId:\d+>" => "isolate/default/get-users",
-                    "isolate/users/user/<userId:\d+>" => "isolate/default/get-user",
-                    "isolate/users/user/<userId:\d+>/<sectionHandle:{handle}>" => "isolate/default/get-user"
+                    "isolate/users" => "isolate/users/index",
+                    "isolate/users/group/<groupId:\d+>" => "isolate/users/index",
+                    "isolate/users/user/<userId:\d+>" => "isolate/users/user",
+                    "isolate/users/user/<userId:\d+>/<sectionHandle:{handle}>" => "isolate/users/user"
                 ]);
             }
         );
