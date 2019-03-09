@@ -133,13 +133,13 @@ class IsolateService extends Component
     }
 
     /**
-     * Returns all (or section-specific) entries that a user has access to
+     * Returns the isolated entries for a given user
      *
      * @param integer $userId
      * @param string $sectionHandle
      * @return Entry
      */
-    public function getUserEntries(int $userId, int $sectionId = null)
+    public function getIsolatedEntries(int $userId, int $sectionId = null)
     {
         return IsolateRecord::findAll([
             "userId" => $userId,

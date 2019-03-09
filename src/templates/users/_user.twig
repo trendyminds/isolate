@@ -45,7 +45,7 @@
   {% set entries = [] %}
 
   {% if section is defined and section %}
-    {% for record in craft.isolate.getUserEntries(user.id, section.id) %}
+    {% for record in craft.isolate.getIsolatedEntries(user.id, section.id) %}
       {% set isolatedEntries = isolatedEntries | merge([record.entryId]) %}
     {% endfor %}
   {% endif %}
