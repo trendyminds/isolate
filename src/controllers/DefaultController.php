@@ -15,6 +15,7 @@ use trendyminds\isolate\Isolate;
 use Craft;
 use craft\web\Controller;
 use craft\elements\User;
+use craft\helpers\UrlHelper;
 
 /**
  * @author    TrendyMinds
@@ -33,6 +34,7 @@ class DefaultController extends Controller
      * @access protected
      */
     protected $allowAnonymous = [
+        'index',
         'dashboard',
         'settings',
         'users',
@@ -43,6 +45,18 @@ class DefaultController extends Controller
 
     // Public Methods
     // =========================================================================
+
+    /**
+     * @return mixed
+     */
+    public function actionIndex()
+    {
+        if (!Craft::$app->user->checkPermission('isolate:assign')) {
+            Craft::$app->controller->redirect(UrlHelper::cpUrl('isolate/dashboard'));
+        }
+
+        Craft::$app->controller->redirect(UrlHelper::cpUrl('isolate/users'));
+    }
 
     /**
      * @return mixed
