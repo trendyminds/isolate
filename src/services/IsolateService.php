@@ -36,6 +36,7 @@ class IsolateService extends Component
      * Get users
      *
      * Fetches all users who can be isolated.
+     * This also notes which users are "isolated"
      * Does not include admins or users who can't access the control panel
      *
      * @return array
@@ -73,6 +74,14 @@ class IsolateService extends Component
         return $data;
     }
 
+    /**
+     * Gets the sections a user has access to
+     *
+     * This also notes what sections are "isolated"
+     *
+     * @param integer $userId
+     * @return array
+     */
     public function getUserSections(int $userId)
     {
         $data = [];
@@ -136,159 +145,6 @@ class IsolateService extends Component
             "userId" => $userId,
             "sectionId" => $sectionId
         ]);
-
-        // $userSections = $this->getSectionPermissions($userId);
-
-        // // If we should only get entries from a specific section
-        // if ($sectionHandle)
-        // {
-        //     // Determine if the user has full or partial access to that section
-        //     $section = array_values(array_filter($userSections, function($section) use ($sectionHandle) {
-        //         return $section->handle === $sectionHandle;
-        //     }));
-
-        //     // If we didn't match a section exit
-        //     if (!$section)
-        //     {
-        //         return false;
-        //     }
-
-        //     // Return all entries if the user has full access
-        //     if ($section[0]->access === "full")
-        //     {
-        //         return Entry::find()
-        //             ->section($section[0]->handle)
-        //             ->all();
-        //     }
-
-        //     // Return the subset of entries if the user has partial access
-        //     if ($section[0]->access === "isolated")
-        //     {
-        //         $isolateEntries = IsolateRecord::findAll([
-        //             "userId" => $userId
-        //         ]);
-
-        //         // Get all entries that match the entries a user is assigned to but only in the section the user requested
-        //         return Entry::find()
-        //             ->id(ArrayHelper::getColumn($isolateEntries, "entryId"))
-        //             ->section($sectionHandle)
-        //             ->all();
-        //     }
-        // }
-
-        // // Get all the entries that a user is assigned
-        // $isolateEntries = IsolateRecord::findAll([
-        //     "userId" => $userId
-        // ]);
-
-        // $userSections = $this->getSectionPermissions($userId);
-
-        // $fullUserSections = array_values(array_filter($userSections, function($section) {
-        //     return $section->access === "full";
-        // }));
-
-        // // Pull all entries from the sections that a user is not isolated from
-        // $entriesFromFullAccessSections = Entry::find()
-        //     ->section(ArrayHelper::getColumn($fullUserSections, "handle"))
-        //     ->all();
-
-        // // Make a second query to get the entries a user has been assigned
-        // $isolateEntries = Entry::find()
-        //     ->id(ArrayHelper::getColumn($isolateEntries, "entryId"))
-        //     ->all();
-
-        // // Return both sets of entries
-        // return array_merge($entriesFromFullAccessSections, $isolateEntries);
-    }
-
-    /**
-     * Checks if a user is isolated from a specific section
-     *
-     * @param integer $userId
-     * @param string $sectionHandle
-     * @return boolean
-     */
-    public function userIsolatedFromSection(int $userId, string $sectionHandle)
-    {
-        $userSections = $this->getSectionPermissions($userId);
-
-        $filteredSection = array_filter($userSections, function($section) use ($sectionHandle) {
-            return $section->handle === $sectionHandle;
-        });
-
-        $filteredSection = array_values($filteredSection);
-
-        if ($filteredSection)
-        {
-            return $filteredSection[0]->access === "isolated";
-        }
-
-        return false;
-    }
-
-    /**
-     * Returns an array of sections that a user has access to
-     * This also denotes if the user has full or partial access to each section
-     *
-     * @param integer $userId
-     * @return array
-     */
-    public function getSectionPermissions(int $userId)
-    {
-        // Get all the entries that a user is assigned
-        $isolateEntries = IsolateRecord::findAll([
-            "userId" => $userId
-        ]);
-
-
-        // Get the handles of the sections a user is isolated from
-        $query = new Query();
-        $isolateSections = $query->select(["sec.handle"])
-            ->from("{{%entries}} ent")
-            ->leftJoin("{{%sections}} sec", "sec.id=ent.sectionId")
-            ->where(["in", "ent.id", ArrayHelper::getColumn($isolateEntries, "entryId")])
-            ->all();
-
-        $isolateSections = ArrayHelper::getColumn($isolateSections, "handle");
-        $isolateSections = array_unique($isolateSections);
-
-
-        // Find the sections a user can edit entries in
-        $allSections = Craft::$app->sections->getAllSections();
-
-        $userAccessibleSections = array_filter($allSections, function ($section) use ($userId) {
-            return Craft::$app->userPermissions->doesUserHavePermission($userId, "editEntries:{$section->uid}");
-        });
-
-        $userAccessibleSections = ArrayHelper::getColumn($userAccessibleSections, "handle");
-        $userAccessibleSections = array_values($userAccessibleSections);
-
-
-        // If a user is assigned entries in a section we need to remove them from our final query
-        // This is because the user should only see those *specific* entries and not every entry from that section
-        $sectionsWithFullAccess = array_values(array_diff($userAccessibleSections, $isolateSections));
-
-
-        // Generate final array that contains all sections and their access level for the supplied user
-        $sections = [];
-
-        foreach ($sectionsWithFullAccess as $handle)
-        {
-            $sections[] = (object) [
-                "handle" => $handle,
-                "access" => "full"
-            ];
-        }
-
-        foreach ($isolateSections as $handle)
-        {
-            $sections[] = (object) [
-                "handle" => $handle,
-                "access" => "isolated"
-            ];
-        }
-
-        return $sections;
     }
 
     /**

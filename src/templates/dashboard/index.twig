@@ -61,8 +61,8 @@
 {% endblock %}
 
 {% block content %}
-  {#
   {% if craft.app.request.getSegment(3) %}
+    {% set section = craft.app.sections.getSectionByHandle(craft.app.request.getSegment(3)) %}
     <table class="data fullwidth collapsible">
       <thead>
         <tr>
@@ -72,7 +72,7 @@
         </tr>
       </thead>
       <tbody>
-        {% for entry in craft.isolate.getUserEntries(currentUser.id, craft.app.request.getSegment(3)) %}
+        {% for entry in craft.isolate.getUserEntries(currentUser.id, section.id) %}
           <tr>
             <td><a href="{{entry.cpEditUrl}}">{{entry.title}}</a></td>
             <td>{{entry.postDate | date("n/j/Y")}}</td>
@@ -82,7 +82,6 @@
       </tbody>
     </table>
   {% endif %}
-  #}
 
   {% if not craft.app.request.getSegment(3) %}
     {% include "isolate/_partials/empty-frame" %}
