@@ -73,6 +73,7 @@ class Isolate extends Plugin
                 }
 
                 $event->rules = array_merge($event->rules, [
+                    "isolate" => "isolate/default/index",
                     "isolate/settings" => "isolate/default/settings",
                     "isolate/dashboard" => "isolate/default/dashboard",
                     "isolate/dashboard/<sectionHandle:{handle}>" => "isolate/default/dashboard",
@@ -129,30 +130,25 @@ class Isolate extends Plugin
         /**
          * If a user is assigned entries use the display name for the sidebar label
          */
-        // if (!Craft::$app->user->checkPermission('isolate:assign')) {
-        //     $items[] = [
-        //         "label" => $this->getSidebarLabel()
-        //     ];
-        // }
+        if (!Craft::$app->user->checkPermission('isolate:assign')) {
+            $nav["label"] = $this->getSidebarLabel();
+        }
 
-        $subnav['dashboard'] = [
-            "label" => "Dashboard",
-            "url" => "isolate/dashboard"
-        ];
+        if (Craft::$app->user->checkPermission('isolate:assign')) {
+            $subnav['users'] = [
+                "label" => "Users",
+                "url" => "isolate/users"
+            ];
 
-        $subnav['users'] = [
-            "label" => "Users",
-            "url" => "isolate/users"
-        ];
+            $subnav['settings'] = [
+                "label" => "Settings",
+                "url" => "isolate/settings"
+            ];
 
-        $subnav['settings'] = [
-            "label" => "Settings",
-            "url" => "isolate/settings"
-        ];
-
-        $nav = array_merge($nav, [
-            'subnav' => $subnav,
-        ]);
+            $nav = array_merge($nav, [
+                'subnav' => $subnav,
+            ]);
+        }
 
         return $nav;
     }

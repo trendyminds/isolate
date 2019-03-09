@@ -51,11 +51,13 @@ class DefaultController extends Controller
      */
     public function actionIndex()
     {
-        if (!Craft::$app->user->checkPermission('isolate:assign')) {
-            Craft::$app->controller->redirect(UrlHelper::cpUrl('isolate/dashboard'));
+        $route = "isolate/dashboard";
+
+        if (Craft::$app->user->checkPermission('isolate:assign')) {
+            $route = "isolate/users";
         }
 
-        Craft::$app->controller->redirect(UrlHelper::cpUrl('isolate/users'));
+        Craft::$app->controller->redirect(UrlHelper::cpUrl($route));
     }
 
     /**
