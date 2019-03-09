@@ -23,49 +23,4 @@ use yii\web\ForbiddenHttpException;
  */
 class AuthenticationService extends Component
 {
-    /**
-     * Is the user currently viewing the Entries area?
-     *
-     * @return boolean
-     */
-    public function isUserInEntriesArea()
-    {
-        if (
-            Craft::$app->request->getSegment(1) === "entries" &&
-            Craft::$app->request->getSegment(2) !== "" &&
-            Craft::$app->request->getSegment(3) === null
-        ) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Is the user currently viewing an Entry?
-     *
-     * @return boolean
-     */
-    public function isUserInEntry()
-    {
-        if (
-            Craft::$app->request->getSegment(1) === "entries" &&
-            Craft::$app->request->getSegment(2) !== "" &&
-            Craft::$app->request->getSegment(3) !== "new"
-        ) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Show authorization error to user
-     *
-     * @return ForbiddenHttpException
-     */
-    public function displayError()
-    {
-        throw new ForbiddenHttpException('User is not permitted to perform this action');
-    }
 }
