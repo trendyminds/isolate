@@ -40,9 +40,9 @@ class Install extends Migration
     public function safeUp()
     {
         $this->driver = Craft::$app->getConfig()->getDb()->driver;
+
         if ($this->createTables()) {
             $this->createIndexes();
-            // Refresh the db schema caches
             Craft::$app->db->schema->refresh();
         }
 
@@ -71,20 +71,19 @@ class Install extends Migration
         $tablesCreated = false;
 
         $tableSchema = Craft::$app->db->schema->getTableSchema('{{%isolate_permissions}}');
+
         if ($tableSchema === null) {
             $tablesCreated = true;
-            $this->createTable(
-                '{{%isolate_permissions}}',
-                [
-                    'id' => $this->primaryKey(),
-                    'userId' => $this->integer()->notNull(),
-                    'entryId' => $this->integer()->notNull(),
-                    'sectionId' => $this->integer()->notNull(),
-                    'dateCreated' => $this->dateTime()->notNull(),
-                    'dateUpdated' => $this->dateTime()->notNull(),
-                    'uid' => $this->uid()
-                ]
-            );
+
+            $this->createTable('{{%isolate_permissions}}', [
+                'id' => $this->primaryKey(),
+                'userId' => $this->integer()->notNull(),
+                'entryId' => $this->integer()->notNull(),
+                'sectionId' => $this->integer()->notNull(),
+                'dateCreated' => $this->dateTime()->notNull(),
+                'dateUpdated' => $this->dateTime()->notNull(),
+                'uid' => $this->uid()
+            ]);
         }
 
         return $tablesCreated;
