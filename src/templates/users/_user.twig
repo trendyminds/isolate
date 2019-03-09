@@ -51,7 +51,7 @@
   {% endif %}
 
   {% if section is defined and section %}
-    {% set entries = craft.isolate.getEntries(section.id) %}
+    {% set entries = craft.isolate.getAllEntries(section.id) %}
   {% endif %}
 
   {% if section is defined and section %}

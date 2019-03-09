@@ -116,7 +116,7 @@ class IsolateService extends Component
      * @param string $sectionHandle
      * @return array
      */
-    public function getEntries(int $sectionId = null)
+    public function getAllEntries(int $sectionId = null)
     {
         $query = new Query();
         $entries = $query->select(["ent.id", "con.title", "sec.handle"])
