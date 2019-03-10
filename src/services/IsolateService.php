@@ -211,4 +211,41 @@ class IsolateService extends Component
 
         return false;
     }
+
+    public function getUserEntries(int $userId, int $sectionId = null)
+    {
+        $isoQuery = new Query();
+        $entQuery = new Query();
+
+        $isolatedRecords = $isoQuery->select(["iso.*"])
+            ->from("{{%isolate_permissions}} iso")
+            ->where(["iso.userId" => $userId])
+            ->andFilterWhere(["iso.sectionId" => $sectionId])
+            ->all();
+
+        $isolatedSections = null;
+
+        if (count($isolatedRecords) > 0)
+        {
+            $isolatedSections = array_map(function($record) {
+                return $record['sectionId'];
+            }, $isolatedRecords);
+
+            $isolatedSections = array_values(array_unique($isolatedSections));
+        }
+
+        $entries = $entQuery->select(["ent.id", "ent.sectionId", "con.title", "ent.dateCreated", "el.slug", "sec.handle"])
+            ->from("{{%entries}} ent")
+            ->leftJoin("{{%content}} con", "con.elementId=ent.id")
+            ->leftJoin("{{%elements_sites}} el", "el.elementId=ent.id")
+            ->leftJoin("{{%sections}} sec", "ent.sectionId=sec.id")
+            ->filterWhere(["ent.sectionId" => $sectionId])
+            ->andFilterWhere(["not", ["ent.sectionId" => $isolatedSections]])
+            ->all();
+
+        // Add the isolated records to the final query
+        $entries = array_merge($entries, $isolatedRecords);
+
+        return $entries;
+    }
 }
