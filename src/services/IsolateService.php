@@ -10,8 +10,6 @@
 
 namespace trendyminds\isolate\services;
 
-use trendyminds\isolate\Isolate;
-use trendyminds\isolate\services\AuthenticationService;
 use trendyminds\isolate\records\IsolateRecord;
 
 use Craft;
@@ -19,6 +17,7 @@ use craft\base\Component;
 use craft\elements\User;
 use craft\elements\Entry;
 use craft\db\Query;
+use yii\web\ForbiddenHttpException;
 
 /**
  * @author    TrendyMinds
@@ -280,5 +279,41 @@ class IsolateService extends Component
             ->id($ids)
             ->status(null)
             ->limit($limit);
+    }
+
+    /**
+     * Checks if a user can edit an entry give a path
+     *
+     * @param integer $userId
+     * @param string $path
+     * @return void
+     */
+    public function verifyIsolatedUserAccess(int $userId, string $path)
+    {
+        $segments = explode("/", $path);
+
+        // If a user is attempting to edit a specific entry
+        if ($segments[0] === "entries" && isset($segments[2]))
+        {
+            // Get the ID of the entry a user is accessing
+            preg_match("/^\d*/", $segments[2], $matches);
+
+            // Compare the ID to the list of IDs a user *can* access
+            $accessibleIds = $this->getUserEntriesIds($userId);
+            $canAccess = in_array($matches[0], $accessibleIds);
+
+            if (!$canAccess)
+            {
+                throw new ForbiddenHttpException('User is not permitted to perform this action');
+            }
+        }
+
+        // Deny isolated user access to the entries area
+        if ($segments[0] === "entries" && !isset($segments[2]))
+        {
+            throw new ForbiddenHttpException('User is not permitted to perform this action');
+        }
+
+        return true;
     }
 }

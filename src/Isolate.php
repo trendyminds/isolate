@@ -12,6 +12,7 @@ namespace trendyminds\isolate;
 
 use trendyminds\isolate\variables\IsolateVariable;
 use trendyminds\isolate\models\Settings;
+use trendyminds\isolate\assetbundles\Isolate\IsolateAsset;
 
 use Craft;
 use craft\base\Plugin;
@@ -71,7 +72,7 @@ class Isolate extends Plugin
                     if (Isolate::$plugin->isolateService->isUserIsolated(Craft::$app->getUser()->id))
                     {
                         Craft::$app->getView()->registerAssetBundle(IsolateAsset::class);
-                        Isolate::$plugin->isolateService->checkUserAccess();
+                        Isolate::$plugin->isolateService->verifyIsolatedUserAccess(Craft::$app->getUser()->id, Craft::$app->request->pathInfo);
                     }
                 }
 
