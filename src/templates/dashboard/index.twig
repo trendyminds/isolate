@@ -47,9 +47,12 @@
 
         {% if type != "single" %}
           <li class="heading"><span>{{type | ucfirst}}s</span></li>
-
           {% for section in sections %}
-            <li><a href="{{url('isolate/dashboard/' ~ section.handle)}}">{{section.name}}</a></li>
+            <li>
+              <a{% if craft.app.request.getSegment(3) == section.handle %} class="sel"{% endif %} href="{{url('isolate/dashboard/' ~ section.handle)}}">
+                {{section.name}}
+              </a>
+            </li>
           {% endfor %}
         {% endif %}
       {% endfor %}
@@ -69,18 +72,32 @@
         </tr>
       </thead>
       <tbody>
-        {% for entry in craft.isolate.getUserEntries(currentUser.id, section.id) %}
+        {% paginate craft.isolate.getUserEntries(currentUser.id, section.id) as pageInfo, pageEntries %}
+
+        {% for entry in pageEntries %}
           <tr>
-            <td>{{entry.id}}</td>
-            <td>{{entry.id}}</td>
-            <td>{{entry.id}}</td>
-            {# <td><a href="{{entry.cpEditUrl}}">{{entry.title}}</a></td>
-            <td>{{entry.dateCreated | date("n/j/Y")}}</td>
-            <td><a href="{{entry.url}}" target="_blank" data-icon="world"></a></td> #}
+            <td>
+              <span class="status {{entry.status}}"></span>
+              <a href="{{entry.cpEditUrl}}">{{entry.title}}</a>
+            </td>
+            <td>{{entry.postDate | date("n/j/Y")}}</td>
+            <td>
+              {% if entry.url %}
+                <a href="{{entry.slug}}" target="_blank" data-icon="world"></a>
+              {% endif %}
+            </td>
           </tr>
         {% endfor %}
       </tbody>
     </table>
+
+    {% if pageInfo.prevUrl %}
+      <a href="{{ pageInfo.prevUrl }}">Previous Page</a>
+    {% endif %}
+
+    {% if pageInfo.nextUrl %}
+      <a href="{{ pageInfo.nextUrl }}">Next Page</a>
+    {% endif %}
   {% endif %}
 
   {% if not craft.app.request.getSegment(3) %}

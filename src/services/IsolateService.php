@@ -212,11 +212,17 @@ class IsolateService extends Component
         return false;
     }
 
-    public function getUserEntries(int $userId, int $sectionId = null)
+    /**
+     * Gets the IDs of every entry a user can edit
+     * Can be scoped down to specific sections
+     *
+     * @param integer $userId
+     * @param integer $sectionId
+     * @return void
+     */
+    public function getUserEntriesIds(int $userId, int $sectionId = null)
     {
         $isoQuery = new Query();
-        $entQuery = new Query();
-
         $isolatedRecords = $isoQuery->select(["iso.*"])
             ->from("{{%isolate_permissions}} iso")
             ->where(["iso.userId" => $userId])
@@ -224,6 +230,7 @@ class IsolateService extends Component
             ->all();
 
         $isolatedSections = null;
+        $isolatedEntryIds = [];
 
         if (count($isolatedRecords) > 0)
         {
@@ -231,21 +238,47 @@ class IsolateService extends Component
                 return $record['sectionId'];
             }, $isolatedRecords);
 
+            $isolatedEntryIds = array_map(function($record) {
+                return $record['entryId'];
+            }, $isolatedRecords);
+
             $isolatedSections = array_values(array_unique($isolatedSections));
         }
 
-        $entries = $entQuery->select(["ent.id", "ent.sectionId", "con.title", "ent.dateCreated", "el.slug", "sec.handle"])
+        $ids = [];
+
+        $secQuery = new Query();
+        $sectionEntries = $secQuery->select(["ent.id"])
             ->from("{{%entries}} ent")
-            ->leftJoin("{{%content}} con", "con.elementId=ent.id")
-            ->leftJoin("{{%elements_sites}} el", "el.elementId=ent.id")
             ->leftJoin("{{%sections}} sec", "ent.sectionId=sec.id")
             ->filterWhere(["ent.sectionId" => $sectionId])
             ->andFilterWhere(["not", ["ent.sectionId" => $isolatedSections]])
             ->all();
 
-        // Add the isolated records to the final query
-        $entries = array_merge($entries, $isolatedRecords);
+        foreach ($sectionEntries as $entry)
+        {
+            $ids[] = $entry['id'];
+        }
 
-        return $entries;
+        $ids = array_merge($ids, $isolatedEntryIds);
+
+        return $ids;
+    }
+
+    /**
+     * Takes the IDs of every entry a user can access and returns an entry model loop
+     *
+     * @param integer $userId
+     * @param integer $sectionId
+     * @return void
+     */
+    public function getUserEntries(int $userId, int $sectionId = null, int $limit = 50)
+    {
+        $ids = $this->getUserEntriesIds($userId, $sectionId);
+
+        return Entry::find()
+            ->id($ids)
+            ->status(null)
+            ->limit($limit);
     }
 }
