@@ -91,12 +91,38 @@
       </tbody>
     </table>
 
-    {% if pageInfo.prevUrl %}
-      <a href="{{ pageInfo.prevUrl }}">Previous Page</a>
-    {% endif %}
+    <br><br>
 
-    {% if pageInfo.nextUrl %}
-      <a href="{{ pageInfo.nextUrl }}">Next Page</a>
+    {% if pageInfo.totalPages > 1 %}
+      <nav class="isolate__pagination">
+        {% if pageInfo.prevUrl %}
+          <a href="{{pageInfo.prevUrl}}">&larr;</a>
+        {% endif %}
+
+        {% if pageInfo.currentPage > 3 %}
+          <a href="{{pageInfo.firstUrl}}">1</a>
+          <span class="isolate__pagination-ellipsis">&hellip;</span>
+        {% endif %}
+
+        {% for page, url in pageInfo.getPrevUrls(2) %}
+          <a href="{{url}}">{{page}}</a>
+        {% endfor %}
+
+        <span class="isolate__pagination-current">{{pageInfo.currentPage}}</span>
+
+        {% for page, url in pageInfo.getNextUrls(2) %}
+          <a href="{{url}}">{{page}}</a>
+        {% endfor %}
+
+        {% if pageInfo.currentPage + 2 < pageInfo.totalPages %}
+          <span class="isolate__pagination-ellipsis">&hellip;</span>
+          <a href="{{pageInfo.lastUrl}}">{{pageInfo.totalPages}}</a>
+        {% endif %}
+
+        {% if pageInfo.nextUrl %}
+          <a href="{{pageInfo.nextUrl}}">&rarr;</a>
+        {% endif %}
+      </nav>
     {% endif %}
   {% endif %}
 
