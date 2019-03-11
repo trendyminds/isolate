@@ -1,6 +1,6 @@
 {
     "name": "trendyminds/isolate",
-    "description": "Force users to only access a subset of your entries",
+    "description": "Restrict your Craft CMS users on a per-entry basis",
     "type": "craft-plugin",
     "version": "0.9.9",
     "keywords": [
