@@ -20,6 +20,15 @@ Isolate does three things after installation:
 
 Uninstalling Isolate simply deletes the database table that tracks the entries a user is isolated from. At this point your users will have access to all entries within the sections they are assigned—the native Craft behavior.
 
+## How are users restricted?
+
+Restriction is handled two ways:
+
+1. A user that is isolated receives a custom, restricted dashboard. This ensures they only see the entries they can edit.
+2. When a user attempts to access an entry edit page Isolate compares this ID to the list of IDs the user has access to. This ensures the user is safely restricted from the standard Entries dashboard and any entries they've been restricted from.
+
+![User dashboard](resources/img/user-dashboard.png)
+
 ## Requirements
 
 This plugin requires Craft CMS 3.0.0-beta.23 or later.
