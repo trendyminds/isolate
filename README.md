@@ -1,6 +1,6 @@
 # <img src="src/icon.svg" width="35" alt="Isolate"> Isolate
 
-Restrict your Craft CMS users on a per-entry basis
+![Entry-based restrictions for your users](resources/img/promo.png)
 
 ## What is Isolate?
 
