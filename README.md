@@ -6,7 +6,7 @@ Restrict your Craft CMS users on a per-entry basis
 
 Craft allows you to restrict users to specific content types, but you cannot scope users to only specific _entries_ in those content types. Isolate is a user management tool to manage users on a per-entry basis.
 
-![User administration](resources/img/user-administration.png)
+![User administration](resources/img/user-admin.png)
 
 ## What happens when I install it?
 
