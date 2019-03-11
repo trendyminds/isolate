@@ -56,6 +56,7 @@ class IsolateService extends Component
         }
 
         $isolatedUsers = array_values(array_unique($isolatedUsers));
+        $fallbackUserImage = Craft::$app->getAssetManager()->getPublishedUrl('@app/web/assets/cp/dist', true, 'images/user.svg');
 
         foreach ($users as $user) {
             $data[] = [
@@ -64,6 +65,7 @@ class IsolateService extends Component
                 "fullName" => $user->fullName,
                 "email" => $user->email,
                 "dateCreated" => $user->dateCreated,
+                "photo" => isset($user->photo) ? "/index.php?p=admin/actions/assets/thumb&uid={$user->photo->uid}&width=30&height=30" : $fallbackUserImage,
                 "isIsolated" => in_array($user->id, $isolatedUsers),
             ];
         }
