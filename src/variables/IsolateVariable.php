@@ -23,33 +23,28 @@ class IsolateVariable
 {
     // Public Methods
     // =========================================================================
-    public function users()
+    public function getUsers(int $groupId = null)
     {
-        return Isolate::$plugin->isolateService->getUsers();
+        return Isolate::$plugin->isolateService->getUsers($groupId);
     }
 
-    public function isUserIsolated(int $userId)
+    public function getUserSections(int $userId)
     {
-        return Isolate::$plugin->isolateService->isUserIsolated($userId);
+        return Isolate::$plugin->isolateService->getUserSections($userId);
     }
 
-    public function getSectionPermissions(int $userId)
+    public function getUserEntries(int $userId, int $sectionId = null)
     {
-        return Isolate::$plugin->isolateService->getSectionPermissions($userId);
+        return Isolate::$plugin->isolateService->getUserEntries($userId, $sectionId);
     }
 
-    public function getUserEntries(int $userId, string $sectionHandle = null)
+    public function getIsolatedEntries(int $userId, string $sectionHandle = null)
     {
-        return Isolate::$plugin->isolateService->getUserEntries($userId, $sectionHandle);
+        return Isolate::$plugin->isolateService->getIsolatedEntries($userId, $sectionHandle);
     }
 
-    public function getEntries(string $sectionHandle = null)
+    public function getAllEntries(int $sectionId = null)
     {
-        return Isolate::$plugin->isolateService->getEntries($sectionHandle);
-    }
-
-    public function userIsolatedFromSection(int $userId, string $sectionHandle)
-    {
-        return Isolate::$plugin->isolateService->userIsolatedFromSection($userId, $sectionHandle);
+        return Isolate::$plugin->isolateService->getAllEntries($sectionId);
     }
 }

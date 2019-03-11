@@ -1,0 +1,94 @@
+{#
+/**
+ * Isolate plugin for Craft CMS 3.x
+ *
+ * Isolate index.twig
+ *
+ * @author    TrendyMinds
+ * @copyright Copyright (c) 2019 TrendyMinds
+ * @link      https://trendyminds.com
+ * @package   Isolate
+ * @since     1.0.0
+ */
+#}
+
+{% requirePermission "isolate:assign" %}
+
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+
+{% do view.registerAssetBundle("trendyminds\\isolate\\assetbundles\\indexcpsection\\IndexCPSectionAsset") %}
+
+{% set title = user.name %}
+{% set selectedSubnavItem = "users" %}
+{% set fullPageForm = true %}
+{% set pluginCpUrl = url('isolate') %}
+
+{% set crumbs = [ { label: "Users", url: url('isolate/users') } ] %}
+
+{% block sidebar %}
+  <nav>
+    <ul>
+      {% for sec in craft.isolate.getUserSections(user.id) %}
+        <li>
+          <a href='{{url("isolate/users/user/#{user.id}/#{sec.handle}")}}' {% if section is defined and section and section.handle == sec.handle %}class="sel"{% endif %}>
+            <span class="status {{sec.isIsolated ? 'expired' : 'disabled'}}"></span>{{sec.name}}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </nav>
+{% endblock %}
+
+{% set content %}
+  {% set isolatedEntries = [] %}
+  {% set entries = [] %}
+
+  {% if section is defined and section %}
+    {% for record in craft.isolate.getIsolatedEntries(user.id, section.id) %}
+      {% set isolatedEntries = isolatedEntries | merge([record.entryId]) %}
+    {% endfor %}
+  {% endif %}
+
+  {% if section is defined and section %}
+    {% set entries = craft.isolate.getAllEntries(section.id) %}
+  {% endif %}
+
+  {% if section is defined and section %}
+    <input type="hidden" name="action" value="isolate/users/save">
+    <input type="hidden" name="userId" value="{{user.id}}">
+    <input type="hidden" name="sectionId" value="{{section.id}}">
+  {% endif %}
+
+  {% if section is defined and section %}
+    <section class="isolate__section" data-isolate-group="{{section.handle}}" data-enabled="{{isolatedEntries | length > 0 ? 'true' : 'false'}}">
+      <div class="isolate__section-header">
+        <h2 class="isolate__section-name">{{section.name}}</h2>
+        <a href="#" class="isolate__section-toggle icon" data-toggle="manage-{{section.handle}}">
+          <span data-toggle-label></span>
+        </a>
+      </div>
+
+      {% set options = [] %}
+
+      {% for entry in entries %}
+        {% set options = options | merge([{
+            label: entry.title,
+            value: entry.id,
+            name: "entries[]",
+            disabled: true,
+            checked: entry.id in isolatedEntries
+          }])
+        %}
+      {% endfor %}
+
+      <div class="manage-{{section.handle}}">
+        {{forms.checkboxGroupField({ options: options })}}
+      </div>
+    </section>
+  {% endif %}
+
+  {% if section is not defined or section is null %}
+    {% include "isolate/_partials/empty-frame" %}
+  {% endif %}
+{% endset %}

@@ -15,6 +15,7 @@ use trendyminds\isolate\Isolate;
 use Craft;
 use craft\web\Controller;
 use craft\elements\User;
+use craft\helpers\UrlHelper;
 
 /**
  * @author    TrendyMinds
@@ -32,12 +33,7 @@ class DefaultController extends Controller
      *         The actions must be in 'kebab-case'
      * @access protected
      */
-    protected $allowAnonymous = [
-        'index',
-        'users',
-        'saveUser',
-        'getUser'
-    ];
+    protected $allowAnonymous = [];
 
     // Public Methods
     // =========================================================================
@@ -47,45 +43,30 @@ class DefaultController extends Controller
      */
     public function actionIndex()
     {
-        return $this->renderTemplate('isolate/index');
-    }
+        $route = "isolate/dashboard";
 
-    /**
-     * @return mixed
-     */
-    public function actionUsers()
-    {
-        return $this->renderTemplate('isolate/users');
-    }
-
-    /**
-     * @return mixed
-     */
-    public function actionSaveUser()
-    {
-        $this->requirePostRequest();
-
-        $userId = Craft::$app->getRequest()->getBodyParam("userId");
-        $entries = Craft::$app->getRequest()->getBodyParam("entries");
-
-        if (!$entries) {
-            $entries = [];
+        if (Craft::$app->user->checkPermission('isolate:assign')) {
+            $route = "isolate/users";
         }
 
-        Isolate::$plugin->isolateService->modifyRecord($userId, $entries);
+        Craft::$app->controller->redirect(UrlHelper::cpUrl($route));
     }
 
     /**
      * @return mixed
      */
-    public function actionGetUser(int $userId)
+    public function actionDashboard()
     {
-        $user = User::findOne([
-            "id" => $userId
-        ]);
+        return $this->renderTemplate('isolate/dashboard');
+    }
 
-        return $this->renderTemplate('isolate/users', [
-            "user" => $user
+    /**
+     * @return mixed
+     */
+    public function actionSettings()
+    {
+        return $this->renderTemplate('isolate/settings', [
+            "settings" => Isolate::$plugin->getSettings()
         ]);
     }
 }

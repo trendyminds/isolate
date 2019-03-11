@@ -39,10 +39,6 @@ class IsolateAsset extends AssetBundle
             'js/Isolate.js',
         ];
 
-        $this->css = [
-            'css/Isolate.css',
-        ];
-
         parent::init();
     }
 }

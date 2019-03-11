@@ -13,32 +13,17 @@
  */
 #}
 
-{# If the current user isn't isolated direct them to the permission area #}
-{% if not craft.isolate.isUserIsolated(currentUser.id) %}
-  {% redirect "isolate/users" %}
-{% endif %}
-
-{# Redirect isolated users to the dashboard URL #}
-{% if craft.isolate.isUserIsolated(currentUser.id) and craft.app.request.getSegment(2) != "dashboard" %}
-  {% redirect "isolate/dashboard" %}
-{% endif %}
-
 {% extends "_layouts/cp" %}
 {% import "_includes/forms" as forms %}
 
 {% do view.registerAssetBundle("trendyminds\\isolate\\assetbundles\\indexcpsection\\IndexCPSectionAsset") %}
 
 {% set title = "Dashboard" %}
-
 {% set pluginCpUrl = url('isolate') %}
-
 {% set sectionGroup = craft.app.sections.editableSections | group('type') %}
 
 {% block actionButton %}
-  {%
-    if craft.isolate.isUserIsolated(currentUser.id) and
-    craft.app.request.getSegment(3)
-  %}
+  {% if craft.app.request.getSegment(3) %}
     {% set section = craft.app.sections.getSectionByHandle(craft.app.request.getSegment(3)) %}
 
     {% if currentUser.can("createEntries:" ~ section.uid) %}
@@ -62,9 +47,12 @@
 
         {% if type != "single" %}
           <li class="heading"><span>{{type | ucfirst}}s</span></li>
-
           {% for section in sections %}
-            <li><a href="{{url('isolate/dashboard/' ~ section.handle)}}">{{section.name}}</a></li>
+            <li>
+              <a{% if craft.app.request.getSegment(3) == section.handle %} class="sel"{% endif %} href="{{url('isolate/dashboard/' ~ section.handle)}}">
+                {{section.name}}
+              </a>
+            </li>
           {% endfor %}
         {% endif %}
       {% endfor %}
@@ -74,6 +62,7 @@
 
 {% block content %}
   {% if craft.app.request.getSegment(3) %}
+    {% set section = craft.app.sections.getSectionByHandle(craft.app.request.getSegment(3)) %}
     <table class="data fullwidth collapsible">
       <thead>
         <tr>
@@ -83,15 +72,58 @@
         </tr>
       </thead>
       <tbody>
-        {% for entry in craft.isolate.getUserEntries(currentUser.id, craft.app.request.getSegment(3)) %}
+        {% paginate craft.isolate.getUserEntries(currentUser.id, section.id) as pageInfo, pageEntries %}
+
+        {% for entry in pageEntries %}
           <tr>
-            <td><a href="{{entry.cpEditUrl}}">{{entry.title}}</a></td>
+            <td>
+              <span class="status {{entry.status}}"></span>
+              <a href="{{entry.cpEditUrl}}">{{entry.title}}</a>
+            </td>
             <td>{{entry.postDate | date("n/j/Y")}}</td>
-            <td><a href="{{entry.url}}" target="_blank" data-icon="world"></a></td>
+            <td>
+              {% if entry.url %}
+                <a href="{{entry.url}}" target="_blank" data-icon="world"></a>
+              {% endif %}
+            </td>
           </tr>
         {% endfor %}
       </tbody>
     </table>
+
+    <br><br>
+
+    {% if pageInfo.totalPages > 1 %}
+      <nav class="isolate__pagination">
+        {% if pageInfo.prevUrl %}
+          <a href="{{pageInfo.prevUrl}}">&larr;</a>
+        {% endif %}
+
+        {% if pageInfo.currentPage > 3 %}
+          <a href="{{pageInfo.firstUrl}}">1</a>
+          <span class="isolate__pagination-ellipsis">&hellip;</span>
+        {% endif %}
+
+        {% for page, url in pageInfo.getPrevUrls(2) %}
+          <a href="{{url}}">{{page}}</a>
+        {% endfor %}
+
+        <span class="isolate__pagination-current">{{pageInfo.currentPage}}</span>
+
+        {% for page, url in pageInfo.getNextUrls(2) %}
+          <a href="{{url}}">{{page}}</a>
+        {% endfor %}
+
+        {% if pageInfo.currentPage + 2 < pageInfo.totalPages %}
+          <span class="isolate__pagination-ellipsis">&hellip;</span>
+          <a href="{{pageInfo.lastUrl}}">{{pageInfo.totalPages}}</a>
+        {% endif %}
+
+        {% if pageInfo.nextUrl %}
+          <a href="{{pageInfo.nextUrl}}">&rarr;</a>
+        {% endif %}
+      </nav>
+    {% endif %}
   {% endif %}
 
   {% if not craft.app.request.getSegment(3) %}

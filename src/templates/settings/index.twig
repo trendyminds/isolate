@@ -1,0 +1,43 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * Isolate plugin for Craft CMS 3.x
+ *
+ * Isolate Settings.twig
+ *
+ * @author    TrendyMinds
+ * @copyright Copyright (c) 2019 TrendyMinds
+ * @link      https://trendyminds.com
+ * @package   Isolate
+ * @since     1.0.0
+ */
+#}
+
+{% requirePermission "isolate:assign" %}
+
+{% extends "_layouts/cp" %}
+{% set title = "Settings" %}
+{% set selectedSubnavItem = "settings" %}
+{% set fullPageForm = true %}
+
+{% import "_includes/forms" as forms %}
+
+{% block content %}
+  <input type="hidden" name="action" value="plugins/save-plugin-settings">
+  <input type="hidden" name="pluginHandle" value="isolate">
+
+  {% namespace 'settings' %}
+
+    {{forms.textField({
+        first: true,
+        label: 'Sidebar Label',
+        instructions: 'Change the sidebar link to something better understood by users who are isolated to a subset of entries.',
+        id: 'sidebarLabel',
+        name: 'sidebarLabel',
+        placeholder: 'Entries',
+        value: settings.sidebarLabel
+      })
+    }}
+
+  {% endnamespace %}
+{% endblock %}

@@ -44,3 +44,35 @@
   transform: translateY(-50%);
   text-align: center;
 }
+
+.isolate__pagination {
+  display: flex;
+  margin: 0 0 3rem;
+}
+
+.isolate__pagination a,
+.isolate__pagination-current {
+  padding: .2rem .6rem;
+}
+
+.isolate__pagination-ellipsis {
+  color: #b6b6b6;
+  padding: .2rem .3rem;
+}
+
+.isolate__pagination a,
+.isolate__pagination-current {
+  background: #ecf6ff;
+  border-radius: .5rem;
+  margin: 0 .15rem;
+}
+
+.isolate__pagination a:hover {
+  background: #dceeff;
+  text-decoration: none;
+}
+
+.isolate__pagination-current {
+  color: #0F78EE;
+  opacity: .35;
+}

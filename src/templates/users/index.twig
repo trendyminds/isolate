@@ -1,0 +1,73 @@
+{#
+/**
+ * Isolate plugin for Craft CMS 3.x
+ *
+ * Isolate index.twig
+ *
+ * @author    TrendyMinds
+ * @copyright Copyright (c) 2019 TrendyMinds
+ * @link      https://trendyminds.com
+ * @package   Isolate
+ * @since     1.0.0
+ */
+#}
+
+{% requirePermission "isolate:assign" %}
+
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+
+{% do view.registerAssetBundle("trendyminds\\isolate\\assetbundles\\indexcpsection\\IndexCPSectionAsset") %}
+
+{% set title = activeGroupId ? userGroup.name : "Users" %}
+{% set selectedSubnavItem = "users" %}
+{% set pluginCpUrl = url('isolate') %}
+
+{% set sidebar %}
+  <nav>
+    <ul>
+      <li><a class="{{craft.app.request.getSegment(4) == "" ? 'sel' : ''}}" href='{{url("isolate/users")}}'>All users</a></li>
+      <li class="heading"><span>Groups</span></li>
+      {% for group in craft.app.userGroups.getAllGroups %}
+        <li><a class="{{activeGroupId == group.id ? 'sel' : ''}}" href='{{url("isolate/users/group/#{group.id}")}}'>{{group.name}}</a></li>
+      {% endfor %}
+    </ul>
+  </nav>
+{% endset %}
+
+{% set content %}
+  <table class="data fullwidth collapsible">
+    <thead>
+      <tr>
+        <th>User</th>
+        <th>Full Name</th>
+        <th>Email</th>
+        <th>Date Created</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in craft.isolate.getUsers(activeGroupId) %}
+        <tr>
+          <td>
+            <div class="element small hasstatus hasthumb">
+              <span class="status {{user.isIsolated ? 'expired' : 'disabled'}}"></span>
+              {% if user.photo is defined and user.photo %}
+                <div class="elementthumb">
+                  <img srcset="{{user.photo}}" alt="{{user.fullName}}">
+                </div>
+              {% endif %}
+              <div class="label">
+                <span class="title">
+                  <a href='{{url("isolate/users/user/#{user.id}")}}'>{{user.name}}</a>
+                </span>
+              </div>
+            </div>
+          </td>
+          <td>{{user.fullName}}</td>
+          <td>{{user.email}}</td>
+          <td>{{user.dateCreated | date('short')}}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endset %}

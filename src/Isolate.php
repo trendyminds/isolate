@@ -12,11 +12,13 @@ namespace trendyminds\isolate;
 
 use trendyminds\isolate\variables\IsolateVariable;
 use trendyminds\isolate\models\Settings;
+use trendyminds\isolate\assetbundles\Isolate\IsolateAsset;
 
 use Craft;
 use craft\base\Plugin;
 use craft\web\UrlManager;
 use craft\web\twig\variables\CraftVariable;
+use craft\helpers\UrlHelper;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\services\UserPermissions;
@@ -67,14 +69,22 @@ class Isolate extends Plugin
             function (RegisterUrlRulesEvent $event) {
                 // Only apply assets if user is logged in
                 if (!Craft::$app->user->isGuest) {
-                    Isolate::$plugin->isolateService->includeIsolatedAssets();
-                    Isolate::$plugin->isolateService->checkUserAccess();
+                    if (Isolate::$plugin->isolateService->isUserIsolated(Craft::$app->getUser()->id))
+                    {
+                        Craft::$app->getView()->registerAssetBundle(IsolateAsset::class);
+                        Isolate::$plugin->isolateService->verifyIsolatedUserAccess(Craft::$app->getUser()->id, Craft::$app->request->pathInfo);
+                    }
                 }
 
                 $event->rules = array_merge($event->rules, [
-                    "isolate/dashboard" => "isolate/default/index",
-                    "isolate/dashboard/<sectionHandle:{handle}>" => "isolate/default/index",
-                    "isolate/users/<userId:\d+>" => "isolate/default/get-user"
+                    "isolate" => "isolate/default/index",
+                    "isolate/settings" => "isolate/default/settings",
+                    "isolate/dashboard" => "isolate/default/dashboard",
+                    "isolate/dashboard/<sectionHandle:{handle}>" => "isolate/default/dashboard",
+                    "isolate/users" => "isolate/users/index",
+                    "isolate/users/group/<groupId:\d+>" => "isolate/users/index",
+                    "isolate/users/user/<userId:\d+>" => "isolate/users/user",
+                    "isolate/users/user/<userId:\d+>/<sectionHandle:{handle}>" => "isolate/users/user"
                 ]);
             }
         );
@@ -118,16 +128,38 @@ class Isolate extends Plugin
 
     public function getCpNavItem()
     {
-        $item = parent::getCpNavItem();
+        $subnav = [];
+        $nav = parent::getCpNavItem();
 
         /**
          * If a user is assigned entries use the display name for the sidebar label
          */
         if (!Craft::$app->user->checkPermission('isolate:assign')) {
-            $item['label'] = $this->getSidebarLabel();
+            $nav["label"] = $this->getSidebarLabel();
         }
 
-        return $item;
+        if (Craft::$app->user->checkPermission('isolate:assign')) {
+            $subnav['users'] = [
+                "label" => "Users",
+                "url" => "isolate/users"
+            ];
+
+            $subnav['settings'] = [
+                "label" => "Settings",
+                "url" => "isolate/settings"
+            ];
+
+            $nav = array_merge($nav, [
+                'subnav' => $subnav,
+            ]);
+        }
+
+        return $nav;
+    }
+
+    public function getSettingsResponse()
+    {
+        Craft::$app->controller->redirect(UrlHelper::cpUrl('isolate/settings'));
     }
 
     // Protected Methods
@@ -139,18 +171,5 @@ class Isolate extends Plugin
     protected function createSettingsModel()
     {
         return new Settings();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function settingsHtml(): string
-    {
-        return Craft::$app->view->renderTemplate(
-            'isolate/settings',
-            [
-                'settings' => $this->getSettings()
-            ]
-        );
     }
 }
