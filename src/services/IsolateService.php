@@ -135,8 +135,8 @@ class IsolateService extends Component
      * Returns the isolated entries for a given user
      *
      * @param integer $userId
-     * @param string $sectionHandle
-     * @return Entry
+     * @param integer $sectionId
+     * @return IsolateRecord[]
      */
     public function getIsolatedEntries(int $userId, int $sectionId = null)
     {
@@ -150,8 +150,11 @@ class IsolateService extends Component
      * Modifies database record of an isolated user (adds/edit/removes)
      *
      * @param integer $userId
+     * @param integer $sectionId
      * @param array $entries
      * @return void
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
     public function modifyRecords(int $userId, int $sectionId, array $entries)
     {
@@ -242,7 +245,7 @@ class IsolateService extends Component
      *
      * @param integer $userId
      * @param integer $sectionId
-     * @return void
+     * @return array
      */
     public function getUserEntriesIds(int $userId, int $sectionId = null)
     {
@@ -294,7 +297,8 @@ class IsolateService extends Component
      *
      * @param integer $userId
      * @param integer $sectionId
-     * @return void
+     * @param int $limit
+     * @return array
      */
     public function getUserEntries(int $userId, int $sectionId = null, int $limit = 50)
     {
@@ -311,7 +315,8 @@ class IsolateService extends Component
      *
      * @param integer $userId
      * @param string $path
-     * @return void
+     * @return bool
+     * @throws ForbiddenHttpException
      */
     public function verifyIsolatedUserAccess(int $userId, string $path)
     {
