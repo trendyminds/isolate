@@ -72,31 +72,18 @@
       </div>
 
       {% if isStructure %}
-        <div class="tableview">
-          <table class="data fullwidth">
-            <thead>
-              <tr>
-                <td scope="col">Title</td>
-              </tr>
-            </thead>
-            <tbody>
-              {% for entry in entries %}
-                {% set indent = 8 + (entry.level - 1) * 35 %}
-                <tr>
-                  <td style="padding-left: {{ indent }}px;">
-                    {{ forms.checkbox({
-                      label: entry.title,
-                      value: entry.id,
-                      name: "entries[]",
-                      disabled: true,
-                      checked: entry.id in isolatedEntries
-                    }) }}
-                  </td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
+        {% for entry in entries %}
+          {% set indent = 8 + (entry.level - 1) * 35 %}
+          <div style="padding-left: {{ indent }}px;">
+            {{ forms.checkbox({
+              label: entry.title,
+              value: entry.id,
+              name: "entries[]",
+              disabled: true,
+              checked: entry.id in isolatedEntries
+            }) }}
+          </div>
+        {% endfor %}
       {% else %}
         {% set options = [] %}
         {% for entry in entries %}
