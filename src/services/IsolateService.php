@@ -10,6 +10,9 @@
 
 namespace trendyminds\isolate\services;
 
+use craft\models\Section;
+use craft\services\Sections;
+use craft\services\Structures;
 use trendyminds\isolate\records\IsolateRecord;
 
 use Craft;
@@ -120,7 +123,7 @@ class IsolateService extends Component
     public function getAllEntries(int $sectionId = null)
     {
         $query = new Query();
-        $entries = $query->select(["ent.id", "con.title", "sec.handle"])
+        $entries = $query->select(["ent.id", "con.title", "sec.handle", "con.siteId"])
             ->from("{{%entries}} ent")
             ->leftJoin("{{%content}} con", "con.elementId=ent.id")
             ->leftJoin("{{%sections}} sec", "sec.id=ent.sectionId")
@@ -128,7 +131,83 @@ class IsolateService extends Component
             ->orderBy("con.title")
             ->all();
 
-        return $entries;
+        return $this->groupEntries($entries);
+    }
+
+    /**
+     * Returns if the given section is a structure
+     *
+     * @param int $sectionId
+     * @return bool
+     */
+    public function isStructure(int $sectionId)
+    {
+        /** @var Sections $sections */
+        $sections = Craft::$app->getSections();
+        $section = $sections->getSectionById($sectionId);
+
+        return $section->type === Section::TYPE_STRUCTURE;
+    }
+
+    /**
+     * Returns all entries contained in a structure
+     *
+     * @param int $sectionId
+     * @return mixed
+     */
+    public function getStructureEntries(int $sectionId)
+    {
+        /** @var Sections $sections */
+        $sections = Craft::$app->getSections();
+        $section = $sections->getSectionById($sectionId);
+
+        /** @var Structures $structures */
+        $structures = Craft::$app->getStructures();
+        $structure = $structures->getStructureById($section->structureId);
+
+        $query = new Query();
+        $entries = $query
+            ->select([
+                "ent.id",
+                "con.title",
+                "sec.handle",
+                "struc.level",
+                "con.siteId",
+            ])
+            ->from("{{%structureelements}} struc")
+            ->leftJoin("{{%elements}} elems", "struc.elementId = elems.id")
+            ->leftJoin("{{%content}} con", "con.elementId=struc.elementId")
+            ->leftJoin("{{%entries}} ent", "con.elementId=ent.id")
+            ->leftJoin("{{%sections}} sec", "sec.id=ent.sectionId")
+            ->where(["struc.structureId" => $structure->id])
+            ->andWhere("con.title IS NOT NULL")
+            ->orderBy([
+                "lft" => SORT_ASC,
+            ])
+            ->all();
+
+        return $this->groupEntries($entries);
+    }
+
+    /**
+     * Groups entries with the same ID (multi-site setup)
+     *
+     * @param array $entries
+     * @return array
+     */
+    protected function groupEntries(array $entries): array
+    {
+        $map = [];
+
+        foreach ($entries as $entry) {
+            if (!array_key_exists($entry['id'], $map)) {
+                $map[$entry['id']] = $entry;
+            } else {
+                $map[$entry['id']]['title'] .= ' | ' . $entry['title'];
+            }
+        }
+
+        return array_values($map);
     }
 
     /**

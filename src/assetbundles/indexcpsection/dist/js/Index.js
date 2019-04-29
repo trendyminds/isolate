@@ -13,13 +13,14 @@
 class PermissionGroup {
   constructor($group) {
     this.$group = $group;
-    this.groupName = this.$group.dataset.isolateGroup;
     this.$toggle = this.$group.querySelector("[data-toggle]");
     this.$label = this.$group.querySelector("[data-toggle-label]");
+    this.$checkAll = this.$group.querySelector("[data-check-all-label]");
     this.$checkboxes = this.$group.querySelectorAll("input");
     this.enabled = (this.$group.dataset.enabled == "true");
 
     this.handleToggle = this.handleToggle.bind(this);
+    this.handleCheckAll = this.handleCheckAll.bind(this);
 
     this.init();
     this.events();
@@ -35,6 +36,7 @@ class PermissionGroup {
 
   events() {
     this.$toggle.addEventListener("click", this.handleToggle);
+    this.$checkAll.addEventListener("click", this.handleCheckAll);
   }
 
   handleToggle(ev) {
@@ -47,15 +49,20 @@ class PermissionGroup {
     }
   }
 
+  handleCheckAll(ev) {
+    ev.preventDefault();
+    this.$checkboxes.forEach($checkbox => $checkbox.checked = true);
+  }
+
   enable() {
     this.enabled = true;
-    this.$checkboxes.forEach($checkbox => $checkbox.removeAttribute("checked"));
+    this.$checkboxes.forEach($checkbox => $checkbox.checked = false);
     this.enableCheckboxes();
   }
 
   disable() {
     this.enabled = false;
-    this.$checkboxes.forEach($checkbox => $checkbox.setAttribute("checked", "checked"));
+    this.$checkboxes.forEach($checkbox => $checkbox.checked = true);
     this.disableCheckboxes();
   }
 
