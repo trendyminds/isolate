@@ -41,50 +41,65 @@
 {% endblock %}
 
 {% set content %}
-  {% set isolatedEntries = [] %}
-  {% set entries = [] %}
-
   {% if section is defined and section %}
+    {% set isolatedEntries = [] %}
+    {% set entries = [] %}
+    {% set isStructure = craft.isolate.isStructure(section.id) %}
+
     {% for record in craft.isolate.getIsolatedEntries(user.id, section.id) %}
       {% set isolatedEntries = isolatedEntries | merge([record.entryId]) %}
     {% endfor %}
-  {% endif %}
 
-  {% if section is defined and section %}
-    {% set entries = craft.isolate.getAllEntries(section.id) %}
-  {% endif %}
+    {% if isStructure %}
+      {% set entries = craft.isolate.getStructureEntries(section.id) %}
+    {% else %}
+      {% set entries = craft.isolate.getAllEntries(section.id) %}
+    {% endif %}
 
-  {% if section is defined and section %}
     <input type="hidden" name="action" value="isolate/users/save">
     <input type="hidden" name="userId" value="{{user.id}}">
     <input type="hidden" name="sectionId" value="{{section.id}}">
-  {% endif %}
 
-  {% if section is defined and section %}
     <section class="isolate__section" data-isolate-group="{{section.handle}}" data-enabled="{{isolatedEntries | length > 0 ? 'true' : 'false'}}">
       <div class="isolate__section-header">
         <h2 class="isolate__section-name">{{section.name}}</h2>
         <a href="#" class="isolate__section-toggle icon" data-toggle="manage-{{section.handle}}">
           <span data-toggle-label></span>
         </a>
+        <a href="#" class="isolate__section-toggle icon add isolate__section-check-all">
+          <span data-check-all-label>Check all</span>
+        </a>
       </div>
 
-      {% set options = [] %}
-
-      {% for entry in entries %}
-        {% set options = options | merge([{
+      {% if isStructure %}
+        {% for entry in entries %}
+          {% set indent = 8 + (entry.level - 1) * 35 %}
+          <div style="padding-left: {{ indent }}px;">
+            {{ forms.checkbox({
+              label: entry.title,
+              value: entry.id,
+              name: "entries[]",
+              disabled: true,
+              checked: entry.id in isolatedEntries
+            }) }}
+          </div>
+        {% endfor %}
+      {% else %}
+        {% set options = [] %}
+        {% for entry in entries %}
+          {% set options = options | merge([{
             label: entry.title,
             value: entry.id,
             name: "entries[]",
             disabled: true,
             checked: entry.id in isolatedEntries
           }])
-        %}
-      {% endfor %}
-
-      <div class="manage-{{section.handle}}">
-        {{forms.checkboxGroupField({ options: options })}}
-      </div>
+          %}
+        {% endfor %}
+        <div class="manage-{{section.handle}}">
+          {{forms.checkboxGroupField({ options: options })}}
+        </div>
+      {% endif %}
     </section>
   {% endif %}
 

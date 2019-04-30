@@ -38,6 +38,10 @@
   padding-left: 3px;
 }
 
+.isolate__section-check-all {
+  margin-left: 20px;
+}
+
 .isolate__empty-frame {
   position: relative;
   top: 50%;
