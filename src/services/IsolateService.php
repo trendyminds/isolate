@@ -402,7 +402,7 @@ class IsolateService extends Component
         $segments = explode("/", $path);
 
         // If a user is attempting to edit a specific entry
-        if ($segments[0] === "entries" && isset($segments[2]))
+        if ($segments[0] === "entries" && isset($segments[2]) && $segments[2] !== "new")
         {
             // Get the ID of the entry a user is accessing
             preg_match("/^\d*/", $segments[2], $matches);

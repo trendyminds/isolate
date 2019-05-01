@@ -1,8 +1,13 @@
 # Release Notes for Isolate
 
+## 1.1.1 - 2019-05-01
+
+### Fixed
+- Add another check to determine if a user is attempting to create a new entry versus editing an existing one
+
 ## 1.1.0 - 2019-04-30
 
-This version is completely owed to the great work by Benjamin ([@N0ps32](https://github.com/N0ps32) on GitHub). Huge props to him and his contribution here! 
+This version is completely owed to the great work by Benjamin ([@N0ps32](https://github.com/N0ps32) on GitHub). Huge props to him and his contribution here!
 
 ### Changed
 - Improvements to the entry selection interface when displaying Structures and multi-site entries ([#2](https://github.com/trendyminds/isolate/pull/2/files))
