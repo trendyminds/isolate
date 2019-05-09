@@ -17,6 +17,7 @@ use trendyminds\isolate\records\IsolateRecord;
 
 use Craft;
 use craft\base\Component;
+use craft\helpers\UrlHelper;
 use craft\elements\User;
 use craft\elements\Entry;
 use craft\db\Query;
@@ -417,10 +418,19 @@ class IsolateService extends Component
             }
         }
 
-        // Deny isolated user access to the entries area
+        // Deny isolated user access to the entries area by redirecting back to dashboard
+        // Redirecting because saving an entry often takes a user back to the entries listing
         if ($segments[0] === "entries" && !isset($segments[2]))
         {
-            throw new ForbiddenHttpException('User is not permitted to perform this action');
+            $url = "isolate";
+
+            if (isset($segments[1])) {
+                $url = "isolate/dashboard/$segments[1]";
+            }
+
+            header('Location: ' . UrlHelper::cpUrl($url));
+
+            return;
         }
 
         return true;

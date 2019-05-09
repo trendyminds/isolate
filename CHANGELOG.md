@@ -1,5 +1,10 @@
 # Release Notes for Isolate
 
+## 1.1.2 - 2019-05-09
+
+### Fixed
+- Redirect users attempting to access the entry listing panel instead of throwing an error. This prevents an exception from being thrown if a user saves an entry and is redirected back to the entry listing area
+
 ## 1.1.1 - 2019-05-01
 
 ### Fixed
