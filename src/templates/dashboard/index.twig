@@ -33,7 +33,7 @@
 {% endblock %}
 
 {% block sidebar %}
-  <nav>
+    <nav>
     <ul>
       {% for type, sections in sectionGroup %}
         {% if type == "single" %}
@@ -68,6 +68,7 @@
         <tr>
           <th>Title</th>
           <th>Post Date</th>
+          <th>Owner</th>
           <th data-icon="world"></th>
         </tr>
       </thead>
@@ -81,6 +82,7 @@
               <a href="{{entry.cpEditUrl}}">{{entry.title}}</a>
             </td>
             <td>{{entry.postDate | date("n/j/Y")}}</td>
+            <td>{{ entry.author }}</td>
             <td>
               {% if entry.url %}
                 <a href="{{entry.url}}" target="_blank" data-icon="world"></a>

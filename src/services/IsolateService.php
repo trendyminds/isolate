@@ -10,6 +10,9 @@
 
 namespace trendyminds\isolate\services;
 
+use craft\elements\db\ElementQuery;
+use craft\elements\db\ElementQueryInterface;
+use craft\elements\db\EntryQuery;
 use craft\models\Section;
 use craft\services\Sections;
 use craft\services\Structures;
@@ -378,7 +381,7 @@ class IsolateService extends Component
      * @param integer $userId
      * @param integer $sectionId
      * @param int $limit
-     * @return array
+     * @return ElementQuery|ElementQueryInterface|EntryQuery
      */
     public function getUserEntries(int $userId, int $sectionId = null, int $limit = 50)
     {
