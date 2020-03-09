@@ -1,9 +1,13 @@
 # Release Notes for Isolate
 
-## 1.1.2 - 2019-05-09
+## 1.1.3 - 2020-03-09
 
 ### Fixed
-- Redirect users attempting to access the entry listing panel instead of throwing an error. This prevents an exception from being thrown if a user saves an entry and is redirected back to the entry listing area
+- Makes the plugin run on latest version of craft (3.4)
+- Fixes Permission registration event
+
+### Changed
+- Added owner to column of entries display table
 
 ## 1.1.1 - 2019-05-01
 
