@@ -115,24 +115,16 @@ class IsolateService extends Component
     }
 
     /**
-     * Get all entries (and by section)
-     * A more performant way of pulling *all* entries from Craft — limited to id, title and section handle
+     * Get all entries by section
      *
      * @param string $sectionHandle
      * @return array
      */
-    public function getAllEntries(int $sectionId = null)
+    public function getAllEntries(int $sectionId)
     {
-        $query = new Query();
-        $entries = $query->select(["ent.id", "con.title", "sec.handle", "con.siteId"])
-            ->from("{{%entries}} ent")
-            ->leftJoin("{{%content}} con", "con.elementId=ent.id")
-            ->leftJoin("{{%sections}} sec", "sec.id=ent.sectionId")
-            ->filterWhere(['sec.id' => $sectionId])
-            ->orderBy("con.title")
-            ->all();
-
-        return $this->groupEntries($entries);
+        return $this->groupEntries(
+            Entry::findAll(["sectionId" => $sectionId])
+        );
     }
 
     /**
@@ -166,28 +158,9 @@ class IsolateService extends Component
         $structures = Craft::$app->getStructures();
         $structure = $structures->getStructureById($section->structureId);
 
-        $query = new Query();
-        $entries = $query
-            ->select([
-                "ent.id",
-                "con.title",
-                "sec.handle",
-                "struc.level",
-                "con.siteId",
-            ])
-            ->from("{{%structureelements}} struc")
-            ->leftJoin("{{%elements}} elems", "struc.elementId = elems.id")
-            ->leftJoin("{{%content}} con", "con.elementId=struc.elementId")
-            ->leftJoin("{{%entries}} ent", "con.elementId=ent.id")
-            ->leftJoin("{{%sections}} sec", "sec.id=ent.sectionId")
-            ->where(["struc.structureId" => $structure->id])
-            ->andWhere("con.title IS NOT NULL")
-            ->orderBy([
-                "lft" => SORT_ASC,
-            ])
-            ->all();
-
-        return $this->groupEntries($entries);
+        return $this->groupEntries(
+            Entry::findAll([ "structureId" => $structure->id ])
+        );
     }
 
     /**

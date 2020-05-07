@@ -1,5 +1,10 @@
 # Release Notes for Isolate
 
+## 1.2.0 - UNRELEASED
+
+### Fixed
+- Address Craft 3.2 compatibility issues with drafts/revisions showing up in entry lists
+
 ## 1.1.2 - 2019-05-09
 
 ### Fixed

@@ -43,7 +43,7 @@ class IsolateVariable
         return Isolate::$plugin->isolateService->getIsolatedEntries($userId, $sectionHandle);
     }
 
-    public function getAllEntries(int $sectionId = null)
+    public function getAllEntries(int $sectionId)
     {
         return Isolate::$plugin->isolateService->getAllEntries($sectionId);
     }
