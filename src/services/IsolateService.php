@@ -123,7 +123,7 @@ class IsolateService extends Component
     public function getAllEntries(int $sectionId)
     {
         return $this->groupEntries(
-            Entry::findAll(["sectionId" => $sectionId])
+            Entry::findAll([ "sectionId" => $sectionId, "status" => null ])
         );
     }
 
@@ -159,7 +159,7 @@ class IsolateService extends Component
         $structure = $structures->getStructureById($section->structureId);
 
         return $this->groupEntries(
-            Entry::findAll([ "structureId" => $structure->id ])
+            Entry::findAll([ "structureId" => $structure->id, "status" => null ])
         );
     }
 
