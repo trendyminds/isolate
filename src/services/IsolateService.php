@@ -373,7 +373,7 @@ class IsolateService extends Component
      */
     public function verifyIsolatedUserAccess(int $userId, string $path)
     {
-        $segments = explode("/", $path);
+        $segments = Craft::$app->request->getSegments();
 
         // If a user is attempting to edit a specific entry
         if ($segments[0] === "entries" && isset($segments[2]) && $segments[2] !== "new")
