@@ -115,24 +115,16 @@ class IsolateService extends Component
     }
 
     /**
-     * Get all entries (and by section)
-     * A more performant way of pulling *all* entries from Craft — limited to id, title and section handle
+     * Get all entries by section
      *
      * @param string $sectionHandle
      * @return array
      */
-    public function getAllEntries(int $sectionId = null)
+    public function getAllEntries(int $sectionId)
     {
-        $query = new Query();
-        $entries = $query->select(["ent.id", "con.title", "sec.handle", "con.siteId"])
-            ->from("{{%entries}} ent")
-            ->leftJoin("{{%content}} con", "con.elementId=ent.id")
-            ->leftJoin("{{%sections}} sec", "sec.id=ent.sectionId")
-            ->filterWhere(['sec.id' => $sectionId])
-            ->orderBy("con.title")
-            ->all();
-
-        return $this->groupEntries($entries);
+        return $this->groupEntries(
+            Entry::findAll([ "sectionId" => $sectionId, "status" => null ])
+        );
     }
 
     /**
@@ -166,28 +158,9 @@ class IsolateService extends Component
         $structures = Craft::$app->getStructures();
         $structure = $structures->getStructureById($section->structureId);
 
-        $query = new Query();
-        $entries = $query
-            ->select([
-                "ent.id",
-                "con.title",
-                "sec.handle",
-                "struc.level",
-                "con.siteId",
-            ])
-            ->from("{{%structureelements}} struc")
-            ->leftJoin("{{%elements}} elems", "struc.elementId = elems.id")
-            ->leftJoin("{{%content}} con", "con.elementId=struc.elementId")
-            ->leftJoin("{{%entries}} ent", "con.elementId=ent.id")
-            ->leftJoin("{{%sections}} sec", "sec.id=ent.sectionId")
-            ->where(["struc.structureId" => $structure->id])
-            ->andWhere("con.title IS NOT NULL")
-            ->orderBy([
-                "lft" => SORT_ASC,
-            ])
-            ->all();
-
-        return $this->groupEntries($entries);
+        return $this->groupEntries(
+            Entry::findAll([ "structureId" => $structure->id, "status" => null ])
+        );
     }
 
     /**
@@ -400,10 +373,10 @@ class IsolateService extends Component
      */
     public function verifyIsolatedUserAccess(int $userId, string $path)
     {
-        $segments = explode("/", $path);
+        $segments = Craft::$app->request->getSegments();
 
-        // If a user is attempting to edit a specific entry
-        if ($segments[0] === "entries" && isset($segments[2]) && $segments[2] !== "new")
+        // If a user is attempting to edit a specific entry (but not create a new one)
+        if ($segments[0] === "entries" && isset($segments[2]) && (!Craft::$app->request->getParam('fresh') && $segments[2] !== "new"))
         {
             // Get the ID of the entry a user is accessing
             preg_match("/^\d*/", $segments[2], $matches);
