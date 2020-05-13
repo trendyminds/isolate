@@ -1,9 +1,13 @@
 # Release Notes for Isolate
 
-## 1.2.0 - UNRELEASED
+## 1.2.0 - 2020-05-13
+
+### Changed
+- Replace various custom queries with native Craft queries to ensure better compatibility with future Craft versions
 
 ### Fixed
 - Address Craft 3.2 compatibility issues with drafts/revisions showing up in entry lists
+- Correct visual issues with newer version of Craft
 
 ## 1.1.2 - 2019-05-09
 
