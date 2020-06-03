@@ -16,13 +16,17 @@ use trendyminds\isolate\assetbundles\Isolate\IsolateAsset;
 
 use Craft;
 use craft\base\Plugin;
+use craft\elements\Entry;
+use craft\events\ModelEvent;
 use craft\web\UrlManager;
 use craft\web\twig\variables\CraftVariable;
 use craft\helpers\UrlHelper;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
+use craft\helpers\ElementHelper;
+use craft\helpers\FileHelper;
 use craft\services\UserPermissions;
-
+use trendyminds\isolate\records\IsolateRecord;
 use yii\base\Event;
 
 /**
@@ -108,6 +112,62 @@ class Isolate extends Plugin
                         'label' => 'Assign permissions',
                     ],
                 ];
+            }
+        );
+
+        Event::on(
+            Entry::class,
+            Entry::EVENT_AFTER_SAVE,
+            function (ModelEvent $event) {
+                // If the user isn't isolated
+                if (!Isolate::$plugin->isolateService->isUserIsolated(Craft::$app->getUser()->id)) {
+                    return false;
+                }
+
+                // Ignore anything that isn't an entry
+                if (!$event->sender instanceof Entry) {
+                    return false;
+                }
+
+                // Ignore new entries because Craft needs to create a draft of a new entry
+                if ($event->isNew) {
+                    return false;
+                }
+
+                // Don't process the revisions
+                if (!ElementHelper::isDraftOrRevision($event->sender)) {
+                    return false;
+                }
+
+                // Don't process non-drafts entries
+                if (!$event->sender->draftId) {
+                    return false;
+                }
+
+                // Don't process drafts of enabled entries
+                if ($event->sender->enabled) {
+                    return false;
+                }
+
+                // Check if the isolated user already has access to this entry, if so, skip it
+                $existingRecord = IsolateRecord::findOne([
+                    "userId" => Craft::$app->getUser()->id,
+                    "sectionId" => $event->sender->sectionId,
+                    "entryId" => $event->sender->id,
+                ]);
+
+                if ($existingRecord) {
+                    return false;
+                }
+
+                // Otherwise make sure this user has access to this entry that they just created
+                $record = new IsolateRecord;
+                $record->setAttribute('userId', Craft::$app->getUser()->id);
+                $record->setAttribute('sectionId', $event->sender->sectionId);
+                $record->setAttribute('entryId', $event->sender->id);
+                $record->save();
+
+                return true;
             }
         );
 
