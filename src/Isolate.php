@@ -129,11 +129,6 @@ class Isolate extends Plugin
                     return false;
                 }
 
-                // Ignore new entries because Craft needs to create a draft of a new entry
-                if ($event->isNew) {
-                    return false;
-                }
-
                 // Don't process the revisions
                 if (!ElementHelper::isDraftOrRevision($event->sender)) {
                     return false;
@@ -149,11 +144,39 @@ class Isolate extends Plugin
                     return false;
                 }
 
+                // If Craft version is lower than 3.4, prefer the old way.
+                if (version_compare(Craft::$app->getVersion(), '3.4', '<')) {
+                    // Check if the isolated user already has access to this entry, if so, skip it
+                    $existingRecord = IsolateRecord::findOne([
+                        "userId" => Craft::$app->getUser()->id,
+                        "sectionId" => $event->sender->sectionId,
+                        "entryId" => $event->sender->id,
+                    ]);
+
+                    if ($existingRecord) {
+                        return false;
+                    }
+
+                    // Otherwise make sure this user has access to this entry that they just created
+                    $record = new IsolateRecord;
+                    $record->setAttribute('userId', Craft::$app->getUser()->id);
+                    $record->setAttribute('sectionId', $event->sender->sectionId);
+                    $record->setAttribute('entryId', $event->sender->id);
+                    $record->save();
+
+                    return true;
+                }
+
+                // Did the user save a draft of a new entry that needs to be isolated, if not exit
+                if (!$event->sender->duplicateOf) {
+                    return false;
+                }
+
                 // Check if the isolated user already has access to this entry, if so, skip it
                 $existingRecord = IsolateRecord::findOne([
                     "userId" => Craft::$app->getUser()->id,
                     "sectionId" => $event->sender->sectionId,
-                    "entryId" => $event->sender->id,
+                    "entryId" => $event->sender->duplicateOf->id,
                 ]);
 
                 if ($existingRecord) {
@@ -164,7 +187,7 @@ class Isolate extends Plugin
                 $record = new IsolateRecord;
                 $record->setAttribute('userId', Craft::$app->getUser()->id);
                 $record->setAttribute('sectionId', $event->sender->sectionId);
-                $record->setAttribute('entryId', $event->sender->id);
+                $record->setAttribute('entryId', $event->sender->duplicateOf->id);
                 $record->save();
 
                 return true;
