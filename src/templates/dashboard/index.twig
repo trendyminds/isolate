@@ -63,7 +63,7 @@
 {% block content %}
   {% if craft.app.request.getSegment(3) %}
     {% set section = craft.app.sections.getSectionByHandle(craft.app.request.getSegment(3)) %}
-    <table class="data fullwidth collapsible">
+    <table class="data fullwidth collapsible" data-isolate-table>
       <thead>
         <tr>
           <th>Title</th>
@@ -123,6 +123,71 @@
           <a href="{{pageInfo.nextUrl}}">&rarr;</a>
         {% endif %}
       </nav>
+    {% endif %}
+
+    {% paginate craft.isolate.getUserEntries(currentUser.id, section.id, 50, true) as draftInfo, draftEntries %}
+
+    {% if draftEntries|length %}
+      <h2>Drafts</h2>
+      <table class="data fullwidth collapsible" data-isolate-table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Post Date</th>
+            <th data-icon="world"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for entry in draftEntries %}
+            <tr>
+              <td>
+                <span class="status {{entry.status}}"></span>
+                <a href="{{entry.cpEditUrl}}">{{entry.title}}</a>
+              </td>
+              <td>{{entry.postDate | date("n/j/Y")}}</td>
+              <td>
+                {% if entry.url %}
+                  <a href="{{entry.url}}" target="_blank" data-icon="world"></a>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <br><br>
+
+      {% if draftInfo.totalPages > 1 %}
+        <nav class="isolate__pagination">
+          {% if draftInfo.prevUrl %}
+            <a href="{{draftInfo.prevUrl}}">&larr;</a>
+          {% endif %}
+
+          {% if draftInfo.currentPage > 3 %}
+            <a href="{{draftInfo.firstUrl}}">1</a>
+            <span class="isolate__pagination-ellipsis">&hellip;</span>
+          {% endif %}
+
+          {% for page, url in draftInfo.getPrevUrls(2) %}
+            <a href="{{url}}">{{page}}</a>
+          {% endfor %}
+
+          <span class="isolate__pagination-current">{{draftInfo.currentPage}}</span>
+
+          {% for page, url in draftInfo.getNextUrls(2) %}
+            <a href="{{url}}">{{page}}</a>
+          {% endfor %}
+
+          {% if draftInfo.currentPage + 2 < draftInfo.totalPages %}
+            <span class="isolate__pagination-ellipsis">&hellip;</span>
+            <a href="{{draftInfo.lastUrl}}">{{draftInfo.totalPages}}</a>
+          {% endif %}
+
+          {% if draftInfo.nextUrl %}
+            <a href="{{draftInfo.nextUrl}}">&rarr;</a>
+          {% endif %}
+        </nav>
+      {% endif %}
     {% endif %}
   {% endif %}
 

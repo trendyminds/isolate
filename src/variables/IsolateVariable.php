@@ -33,9 +33,9 @@ class IsolateVariable
         return Isolate::$plugin->isolateService->getUserSections($userId);
     }
 
-    public function getUserEntries(int $userId, int $sectionId = null)
+    public function getUserEntries(int $userId, int $sectionId = null, int $limit = 50, bool $getDrafts = false)
     {
-        return Isolate::$plugin->isolateService->getUserEntries($userId, $sectionId);
+        return Isolate::$plugin->isolateService->getUserEntries($userId, $sectionId, $limit, $getDrafts);
     }
 
     public function getIsolatedEntries(int $userId, string $sectionHandle = null)
