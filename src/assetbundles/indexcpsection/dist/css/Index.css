@@ -16,6 +16,10 @@
   margin: 0 0 1.5rem;
 }
 
+.isolate__section div .checkbox {
+  display: none;
+}
+
 .isolate__section-header {
   align-items: center;
   display: flex;
