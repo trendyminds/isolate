@@ -31,7 +31,7 @@ Restriction is handled two ways:
 
 ## Requirements
 
-This plugin requires Craft CMS 3.0.0-beta.23 or later.
+This plugin requires Craft CMS 3.2 or later.
 
 ## Installation
 

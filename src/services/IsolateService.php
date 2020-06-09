@@ -303,6 +303,8 @@ class IsolateService extends Component
     public function getUserEntriesIds(int $userId, int $sectionId = null)
     {
         $isoQuery = new Query();
+
+        // Get all of the records that a user has been explicitly isolated into
         $isolatedRecords = $isoQuery->select(["iso.*"])
             ->from("{{%isolate_permissions}} iso")
             ->where(["iso.userId" => $userId])
@@ -312,6 +314,7 @@ class IsolateService extends Component
         $isolatedSections = null;
         $isolatedEntryIds = [];
 
+        // If the user is isolated we need to get the sections they are isolated into and the IDs of the entries they are isolated into
         if (count($isolatedRecords) > 0)
         {
             $isolatedSections = array_map(function($record) {
@@ -328,6 +331,9 @@ class IsolateService extends Component
         $ids = [];
 
         $secQuery = new Query();
+
+        // Find any sections the user has access to that are *not* part of their isolated sections
+        // We need to display all of these
         $sectionEntries = $secQuery->select(["ent.id"])
             ->from("{{%entries}} ent")
             ->leftJoin("{{%sections}} sec", "ent.sectionId=sec.id")
@@ -351,16 +357,14 @@ class IsolateService extends Component
      * @param integer $userId
      * @param integer $sectionId
      * @param int $limit
+     * @param bool $getDrafts
      * @return array
      */
-    public function getUserEntries(int $userId, int $sectionId = null, int $limit = 50)
+    public function getUserEntries(int $userId, int $sectionId = null, int $limit = 50, bool $getDrafts = false)
     {
         $ids = $this->getUserEntriesIds($userId, $sectionId);
 
-        return Entry::find()
-            ->id($ids)
-            ->status(null)
-            ->limit($limit);
+        return Entry::find()->id($ids)->status(null)->limit($limit)->drafts($getDrafts);
     }
 
     /**

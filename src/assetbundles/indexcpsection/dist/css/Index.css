@@ -16,6 +16,10 @@
   margin: 0 0 1.5rem;
 }
 
+.isolate__section div .checkbox {
+  display: none;
+}
+
 .isolate__section-header {
   align-items: center;
   display: flex;
@@ -79,4 +83,8 @@
 .isolate__pagination-current {
   color: #0F78EE;
   opacity: .35;
+}
+
+.isolate__entries th:first-of-type {
+  width: 65%;
 }
