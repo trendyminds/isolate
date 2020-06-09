@@ -1,5 +1,16 @@
 # Release Notes for Isolate
 
+## 1.3.0 - 2020-06-09
+
+### Changed
+- Isolate 1.3.0 now requires Craft 3.2+
+
+### Fixed
+- Submitting a draft as an isolated user automatically adds the entry as one of your "isolated" entries
+
+### Added
+- User drafts now show up below on an isolated user's dashboard
+
 ## 1.2.0 - 2020-05-13
 
 ### Changed
