@@ -63,7 +63,7 @@
 {% block content %}
   {% if craft.app.request.getSegment(3) %}
     {% set section = craft.app.sections.getSectionByHandle(craft.app.request.getSegment(3)) %}
-    <table class="data fullwidth collapsible" data-isolate-table>
+    <table class="data fullwidth collapsible isolate__entries">
       <thead>
         <tr>
           <th>Title</th>
@@ -127,9 +127,9 @@
 
     {% paginate craft.isolate.getUserEntries(currentUser.id, section.id, 50, true) as draftInfo, draftEntries %}
 
-    {% if draftEntries|length %}
+    {% if draftEntries | length %}
       <h2>Drafts</h2>
-      <table class="data fullwidth collapsible" data-isolate-table>
+      <table class="data fullwidth collapsible isolate__entries">
         <thead>
           <tr>
             <th>Title</th>

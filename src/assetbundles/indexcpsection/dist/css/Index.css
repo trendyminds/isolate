@@ -84,3 +84,7 @@
   color: #0F78EE;
   opacity: .35;
 }
+
+.isolate__entries th:first-of-type {
+  width: 65%;
+}
