@@ -119,6 +119,16 @@ class Isolate extends Plugin
             Entry::class,
             Entry::EVENT_AFTER_SAVE,
             function (ModelEvent $event) {
+                // Don't do anything if this is a console request
+                if (Craft::$app->getRequest()->isConsoleRequest) {
+                    return false;
+                }
+
+                // Don't do anything if the user is not signed in
+                if (Craft::$app->getUser()->isGuest) {
+                    return false;
+                }
+
                 // If the user isn't isolated
                 if (!Isolate::$plugin->isolateService->isUserIsolated(Craft::$app->getUser()->id)) {
                     return false;
