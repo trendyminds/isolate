@@ -1,5 +1,10 @@
 # Release Notes for Isolate
 
+## 1.3.1 - 2020-06-10
+
+### Fixed
+- Don't run Isolate event when a user is not signed in or it is invoked via console commands/migrations
+
 ## 1.3.0 - 2020-06-09
 
 ### Changed
