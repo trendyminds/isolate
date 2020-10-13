@@ -107,7 +107,7 @@ class Isolate extends Plugin
             UserPermissions::class,
             UserPermissions::EVENT_REGISTER_PERMISSIONS,
             function(RegisterUserPermissionsEvent $event) {
-                $event->permissions["General"]["accessCp"]["nested"]["accessPlugin-isolate"]["nested"] = [
+                $event->permissions["Isolate"] = [
                     'isolate:assign' => [
                         'label' => 'Assign permissions',
                     ],
