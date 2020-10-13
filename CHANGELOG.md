@@ -1,5 +1,10 @@
 # Release Notes for Isolate
 
+## 1.4.0 - 2020-10-13
+
+### Changed
+- Isolate permissions now follow Craft's convention to correct issues with multi-site and non-English languages. ([#21](https://github.com/trendyminds/isolate/pull/21))
+
 ## 1.3.1 - 2020-06-10
 
 ### Fixed
