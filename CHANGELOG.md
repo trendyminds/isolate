@@ -4,7 +4,7 @@
 
 ### Fixed
 - Renamed directory to ensure Composer 2.0 compatibility. ([#22](https://github.com/trendyminds/isolate/pull/22)). Thanks @brandonkelly!
-s
+
 ## 1.4.0 - 2020-10-13
 
 ### Changed
