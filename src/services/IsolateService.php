@@ -380,7 +380,7 @@ class IsolateService extends Component
         $segments = Craft::$app->request->getSegments();
 
         // If a user is attempting to edit a specific entry (but not create a new one)
-        if ($segments[0] === "entries" && isset($segments[2]) && (!Craft::$app->request->getParam('fresh') && $segments[2] !== "new"))
+        if (count($segments) && $segments[0] === "entries" && isset($segments[2]) && (!Craft::$app->request->getParam('fresh') && $segments[2] !== "new"))
         {
             // Get the ID of the entry a user is accessing
             preg_match("/^\d*/", $segments[2], $matches);
@@ -397,7 +397,7 @@ class IsolateService extends Component
 
         // Deny isolated user access to the entries area by redirecting back to dashboard
         // Redirecting because saving an entry often takes a user back to the entries listing
-        if ($segments[0] === "entries" && !isset($segments[2]))
+        if (count($segments) && $segments[0] === "entries" && !isset($segments[2]))
         {
             $url = "isolate";
 

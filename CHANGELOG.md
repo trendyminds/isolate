@@ -1,5 +1,10 @@
 # Release Notes for Isolate
 
+## 1.4.2 - 2020-10-28
+
+### Fixed
+- Fix error that occurred if an Isolated user is accessing the control panel homepage and `$segments` contains no array items. ([#24](https://github.com/trendyminds/isolate/pull/24))
+
 ## 1.4.1 - 2020-10-26
 
 ### Fixed
