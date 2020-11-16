@@ -29,7 +29,7 @@ class IsolateAsset extends AssetBundle
      */
     public function init()
     {
-        $this->sourcePath = "@trendyminds/isolate/assetbundles/isolate/dist";
+        $this->sourcePath = "@trendyminds/isolate/assetbundles/Isolate/dist";
 
         $this->depends = [
             CpAsset::class,
