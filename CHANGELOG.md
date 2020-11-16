@@ -1,5 +1,10 @@
 # Release Notes for Isolate
 
+## 1.4.3 - 2020-11-16
+
+### Fixed
+- Fix case-sensitivity issue on the `sourcePath` when loading the AssetBundle
+
 ## 1.4.2 - 2020-10-28
 
 ### Fixed
