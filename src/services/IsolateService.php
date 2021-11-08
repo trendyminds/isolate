@@ -336,7 +336,7 @@ class IsolateService extends Component
         // We need to display all of these
         $sectionEntries = $secQuery->select(["ent.id"])
             ->from("{{%entries}} ent")
-            ->leftJoin("{{%sections}} sec", "ent.sectionId=sec.id")
+            ->leftJoin("{{%sections}} sec", "{{ent}}.{{sectionId}} = {{sec}}.{{id}}")
             ->filterWhere(["ent.sectionId" => $sectionId])
             ->andFilterWhere(["not", ["ent.sectionId" => $isolatedSections]])
             ->all();
