@@ -1,5 +1,10 @@
 # Release Notes for Isolate
 
+## 1.4.3 - 2021-11-10
+
+### Fixed
+- Fix error when displaying entries an isolated user has access to when using a Postgres database ([#41](https://github.com/trendyminds/isolate/pull/41))
+
 ## 1.4.3 - 2020-11-16
 
 ### Fixed
