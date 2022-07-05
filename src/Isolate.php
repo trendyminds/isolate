@@ -253,7 +253,7 @@ class Isolate extends Plugin
 
     public function getSettingsResponse(): mixed
     {
-        Craft::$app->controller->redirect(UrlHelper::cpUrl('isolate/settings'));
+        return Craft::$app->getResponse()->redirect(UrlHelper::cpUrl('isolate/settings'));
     }
 
     // Protected Methods
