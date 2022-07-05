@@ -3,7 +3,7 @@
 ## 2.0.0 - 2022-07-05
 
 ### Added
-- Support for Craft 4
+- Support for Craft 4 (Thank you, [@timoschwarzer](https://github.com/timoschwarzer)!)
 
 ## 1.4.4 - 2021-11-10
 
