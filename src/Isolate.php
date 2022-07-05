@@ -54,7 +54,7 @@ class Isolate extends Plugin
     /**
      * @var string
      */
-    public $schemaVersion = '1.0.0';
+    public string $schemaVersion = '1.0.0';
 
     // Public Methods
     // =========================================================================
@@ -108,8 +108,9 @@ class Isolate extends Plugin
             UserPermissions::EVENT_REGISTER_PERMISSIONS,
             function(RegisterUserPermissionsEvent $event) {
                 $event->permissions["Isolate"] = [
-                    'isolate:assign' => [
-                        'label' => 'Assign permissions',
+                    'heading' => 'Isolate',
+                    'permissions' => [
+                        ['label' => 'Assign permissions'],
                     ],
                 ];
             }
@@ -219,7 +220,7 @@ class Isolate extends Plugin
         return Craft::t('isolate', $this->getSettings()->sidebarLabel);
     }
 
-    public function getCpNavItem()
+    public function getCpNavItem(): ?array
     {
         $subnav = [];
         $nav = parent::getCpNavItem();
@@ -250,9 +251,9 @@ class Isolate extends Plugin
         return $nav;
     }
 
-    public function getSettingsResponse()
+    public function getSettingsResponse(): mixed
     {
-        Craft::$app->controller->redirect(UrlHelper::cpUrl('isolate/settings'));
+        return Craft::$app->getResponse()->redirect(UrlHelper::cpUrl('isolate/settings'));
     }
 
     // Protected Methods
@@ -261,7 +262,7 @@ class Isolate extends Plugin
     /**
      * @inheritdoc
      */
-    protected function createSettingsModel()
+    protected function createSettingsModel(): ?\craft\base\Model
     {
         return new Settings();
     }

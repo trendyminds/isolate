@@ -29,10 +29,6 @@ Restriction is handled two ways:
 
 ![User dashboard](resources/img/user-dashboard.png)
 
-## Requirements
-
-This plugin requires Craft CMS 3.2 or later.
-
 ## Installation
 
 [Install Isolate from the Craft CMS Plugin Store!](https://plugins.craftcms.com/isolate)

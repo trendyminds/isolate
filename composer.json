@@ -2,7 +2,7 @@
     "name": "trendyminds/isolate",
     "description": "Restrict your Craft CMS users on a per-entry basis",
     "type": "craft-plugin",
-    "version": "1.4.4",
+    "version": "2.0.0",
     "keywords": [
         "permissions",
         "entry permission",
@@ -25,7 +25,8 @@
         }
     ],
     "require": {
-        "craftcms/cms": "^3.2"
+        "php": "^8.0.2",
+        "craftcms/cms": "^4.0.0"
     },
     "autoload": {
         "psr-4": {
@@ -42,5 +43,11 @@
             "isolateService": "trendyminds\\isolate\\services\\IsolateService"
         },
         "class": "trendyminds\\isolate\\Isolate"
+    },
+    "config": {
+        "allow-plugins": {
+            "yiisoft/yii2-composer": true,
+            "craftcms/plugin-installer": true
+        }
     }
 }

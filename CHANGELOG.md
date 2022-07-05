@@ -1,5 +1,10 @@
 # Release Notes for Isolate
 
+## 2.0.0 - 2022-07-05
+
+### Added
+- Support for Craft 4
+
 ## 1.4.4 - 2021-11-10
 
 ### Fixed
