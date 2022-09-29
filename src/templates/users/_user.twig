@@ -51,10 +51,14 @@
     {% endfor %}
 
 	  {% if craft.app.isMultiSite() %}
-		  {% set sites = [{ label: 'Primary Site (' ~ craft.app.sites.primarySite.name ~ ')', value: craft.app.sites.primarySite.id }] %}
+		  {% set sites = [] %}
 
 		  {% for site in craft.app.sites.getAllSites() %}
-			  {% set sites = sites|merge([{ label: site.name, value: site.id }]) %}
+			  {% for sitesettings in section.siteSettings %}
+			     {% if sitesettings.siteId == site.id %}
+				     {% set sites = sites|merge([{ label: site.name, value: site.id }]) %}
+			     {% endif %}
+			  {% endfor %}
 		  {% endfor %}
 
 		  {{ forms.selectField({
