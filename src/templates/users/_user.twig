@@ -27,111 +27,111 @@
 {% set crumbs = [ { label: "Users", url: url('isolate/users') } ] %}
 
 {% block sidebar %}
-  <nav>
-    <ul>
-      {% for sec in craft.isolate.getUserSections(user.id) %}
-        <li>
-          <a href='{{url("isolate/users/user/#{user.id}/#{sec.handle}")}}' {% if section is defined and section and section.handle == sec.handle %}class="sel"{% endif %}>
-            <span class="status {{sec.isIsolated ? 'expired' : 'disabled'}}"></span>{{sec.name}}
-          </a>
-        </li>
-      {% endfor %}
-    </ul>
-  </nav>
+	<nav>
+		<ul>
+			{% for sec in craft.isolate.getUserSections(user.id) %}
+				<li>
+					<a href='{{url("isolate/users/user/#{user.id}/#{sec.handle}")}}' {% if section is defined and section and section.handle == sec.handle %}class="sel"{% endif %}>
+						<span class="status {{sec.isIsolated ? 'expired' : 'disabled'}}"></span>{{sec.name}}
+					</a>
+				</li>
+			{% endfor %}
+		</ul>
+	</nav>
 {% endblock %}
 
 {% set content %}
-  {% if section is defined and section %}
-    {% set isolatedEntries = [] %}
-    {% set entries = [] %}
-    {% set isStructure = craft.isolate.isStructure(section.id) %}
+	{% if section is defined and section %}
+		{% set isolatedEntries = [] %}
+		{% set entries = [] %}
+		{% set isStructure = craft.isolate.isStructure(section.id) %}
 
-    {% for record in craft.isolate.getIsolatedEntries(user.id, section.id) %}
-      {% set isolatedEntries = isolatedEntries | merge([record.entryId]) %}
-    {% endfor %}
+		{% for record in craft.isolate.getIsolatedEntries(user.id, section.id) %}
+			{% set isolatedEntries = isolatedEntries | merge([record.entryId]) %}
+		{% endfor %}
 
-	  {% if craft.app.isMultiSite() %}
-		  {% set sites = [] %}
+		{% if craft.app.isMultiSite() %}
+			{% set sites = [] %}
 
-		  {% for site in craft.app.sites.getAllSites() %}
-			  {% for sitesettings in section.siteSettings %}
-			     {% if sitesettings.siteId == site.id %}
-				     {% set sites = sites|merge([{ label: site.name, value: site.id }]) %}
-			     {% endif %}
-			  {% endfor %}
-		  {% endfor %}
+			{% for site in craft.app.sites.getAllSites() %}
+				{% for sitesettings in section.siteSettings %}
+					{% if sitesettings.siteId == site.id %}
+						{% set sites = sites|merge([{ label: site.name, value: site.id }]) %}
+					{% endif %}
+				{% endfor %}
+			{% endfor %}
 
-		  {{ forms.selectField({
-			  label: "Target Site",
-			  instructions: 'Choose site',
-			  id: 'siteId',
-			  name: 'siteId',
-			  options: sites,
-			  value: craft.app.request.post('siteId')|default(craft.app.sites.primarySite.id),
-		  }) }}
+			{{ forms.selectField({
+				label: "Target Site",
+				instructions: 'Choose site',
+				id: 'siteId',
+				name: 'siteId',
+				options: sites,
+				value: craft.app.request.post('siteId')|default(sites.0.value),
+			}) }}
 
-		  <script>
-			  document.getElementById('siteId').onchange = function() {
-				  document.getElementById('main-form').action.setAttribute('disabled', 'disabled');
-				  document.getElementById('main-form').submit();
-			  };
-		  </script>
-	  {% endif %}
+			<script>
+				document.getElementById('siteId').onchange = function() {
+					document.getElementById('main-form').action.setAttribute('disabled', 'disabled');
+					document.getElementById('main-form').submit();
+				};
+			</script>
+		{% endif %}
 
-    {% if isStructure %}
-      {% set entries = craft.isolate.getStructureEntries(section.id, craft.app.request.post('siteId')|default(craft.app.sites.primarySite.id)) %}
-    {% else %}
-      {% set entries = craft.isolate.getAllEntries(section.id, craft.app.request.post('siteId')|default(craft.app.sites.primarySite.id)) %}
-    {% endif %}
+		{% if isStructure %}
+			{% set entries = craft.isolate.getStructureEntries(section.id, craft.app.request.post('siteId')|default(sites.0.value)) %}
+		{% else %}
+			{% set entries = craft.isolate.getAllEntries(section.id, craft.app.request.post('siteId')|default(sites.0.value)) %}
+		{% endif %}
 
-    <input type="hidden" name="action" value="isolate/users/save">
-    <input type="hidden" name="userId" value="{{user.id}}">
-    <input type="hidden" name="sectionId" value="{{section.id}}">
+		<input type="hidden" name="action" value="isolate/users/save">
+		<input type="hidden" name="userId" value="{{user.id}}">
+		<input type="hidden" name="sectionId" value="{{section.id}}">
 
-    <section class="isolate__section" data-isolate-group="{{section.handle}}" data-enabled="{{isolatedEntries | length > 0 ? 'true' : 'false'}}">
-      <div class="isolate__section-header">
-        <h2 class="isolate__section-name">{{section.name}}</h2>
-        <a href="#" class="isolate__section-toggle icon" data-toggle="manage-{{section.handle}}">
-          <span data-toggle-label></span>
-        </a>
-        <a href="#" class="isolate__section-toggle icon add isolate__section-check-all">
-          <span data-check-all-label>Check all</span>
-        </a>
-      </div>
+		<section class="isolate__section" data-isolate-group="{{section.handle}}" data-enabled="{{isolatedEntries | length > 0 ? 'true' : 'false'}}">
+			<div class="isolate__section-header">
+				<h2 class="isolate__section-name">{{section.name}}</h2>
+				<a href="#" class="isolate__section-toggle icon" data-toggle="manage-{{section.handle}}">
+					<span data-toggle-label></span>
+				</a>
+				<a href="#" class="isolate__section-toggle icon add isolate__section-check-all">
+					<span data-check-all-label>Check all</span>
+				</a>
+			</div>
 
-      {% if isStructure %}
-        {% for entry in entries %}
-          {% set indent = 8 + (entry.level - 1) * 35 %}
-          <div style="padding-left: {{ indent }}px;">
-            {{ forms.checkbox({
-              label: entry.title,
-              value: entry.id,
-              name: "entries[]",
-              disabled: true,
-              checked: entry.id in isolatedEntries
-            }) }}
-          </div>
-        {% endfor %}
-      {% else %}
-        {% set options = [] %}
-        {% for entry in entries %}
-          {% set options = options | merge([{
-            label: entry.title,
-            value: entry.id,
-            name: "entries[]",
-            disabled: true,
-            checked: entry.id in isolatedEntries
-          }])
-          %}
-        {% endfor %}
-        <div class="manage-{{section.handle}}">
-          {{forms.checkboxGroupField({ options: options })}}
-        </div>
-      {% endif %}
-    </section>
-  {% endif %}
+			{% if isStructure %}
+				{% for entry in entries %}
+					{% set indent = 8 + (entry.level - 1) * 35 %}
+					<div style="padding-left: {{ indent }}px;">
+						{{ forms.checkbox({
+							label: entry.title,
+							value: entry.id,
+							name: "entries[]",
+							disabled: true,
+							checked: entry.id in isolatedEntries
+						}) }}
+					</div>
+				{% endfor %}
+			{% else %}
+				{% set options = [] %}
+				{% for entry in entries %}
+					{% set options = options | merge([{
+						label: entry.title,
+						value: entry.id,
+						name: "entries[]",
+						disabled: true,
+						checked: entry.id in isolatedEntries
+					}])
+					%}
+				{% endfor %}
+				<div class="manage-{{section.handle}}">
+					{{forms.checkboxGroupField({ options: options })}}
+				</div>
+			{% endif %}
+		</section>
+	{% endif %}
 
-  {% if section is not defined or section is null %}
-    {% include "isolate/_partials/empty-frame" %}
-  {% endif %}
+	{% if section is not defined or section is null %}
+		{% include "isolate/_partials/empty-frame" %}
+	{% endif %}
 {% endset %}
