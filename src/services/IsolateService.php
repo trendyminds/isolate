@@ -114,16 +114,18 @@ class IsolateService extends Component
         return $data;
     }
 
-    /**
-     * Get all entries by section
-     *
-     * @param string $sectionHandle
-     * @return array
-     */
-    public function getAllEntries(int $sectionId)
+	/**
+	 * Get all entries by section
+	 *
+	 * @param int      $sectionId
+	 * @param int|bool $siteId
+	 *
+	 * @return array
+	 */
+    public function getAllEntries(int $sectionId, int|bool $siteId = false)
     {
         return $this->groupEntries(
-            Entry::findAll([ "sectionId" => $sectionId, "status" => null ])
+            Entry::findAll([ "sectionId" => $sectionId, "status" => null, 'siteId' => $siteId ])
         );
     }
 
@@ -142,13 +144,15 @@ class IsolateService extends Component
         return $section->type === Section::TYPE_STRUCTURE;
     }
 
-    /**
-     * Returns all entries contained in a structure
-     *
-     * @param int $sectionId
-     * @return mixed
-     */
-    public function getStructureEntries(int $sectionId)
+	/**
+	 * Returns all entries contained in a structure
+	 *
+	 * @param int $sectionId
+	 * @param int $siteId
+	 *
+	 * @return mixeds
+	 */
+    public function getStructureEntries(int $sectionId, $siteId = false)
     {
         /** @var Sections $sections */
         $sections = Craft::$app->getSections();
@@ -159,7 +163,7 @@ class IsolateService extends Component
         $structure = $structures->getStructureById($section->structureId);
 
         return $this->groupEntries(
-            Entry::findAll([ "structureId" => $structure->id, "status" => null ])
+            Entry::findAll([ "structureId" => $structure->id, "status" => null, 'siteId' => $siteId ])
         );
     }
 

@@ -43,9 +43,9 @@ class IsolateVariable
         return Isolate::$plugin->isolateService->getIsolatedEntries($userId, $sectionHandle);
     }
 
-    public function getAllEntries(int $sectionId)
+    public function getAllEntries(int $sectionId, $siteId = false)
     {
-        return Isolate::$plugin->isolateService->getAllEntries($sectionId);
+        return Isolate::$plugin->isolateService->getAllEntries($sectionId, $siteId);
     }
 
     public function isStructure(int $sectionId)
@@ -53,8 +53,8 @@ class IsolateVariable
         return Isolate::$plugin->isolateService->isStructure($sectionId);
     }
 
-    public function getStructureEntries(int $sectionId)
+    public function getStructureEntries(int $sectionId, int|bool $siteId = false)
     {
-        return Isolate::$plugin->isolateService->getStructureEntries($sectionId);
+        return Isolate::$plugin->isolateService->getStructureEntries($sectionId, $siteId);
     }
 }

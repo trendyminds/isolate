@@ -50,10 +50,34 @@
       {% set isolatedEntries = isolatedEntries | merge([record.entryId]) %}
     {% endfor %}
 
+	  {% if craft.app.isMultiSite() %}
+		  {% set sites = [{ label: 'Primary Site (' ~ craft.app.sites.primarySite.name ~ ')', value: craft.app.sites.primarySite.id }] %}
+
+		  {% for site in craft.app.sites.getAllSites() %}
+			  {% set sites = sites|merge([{ label: site.name, value: site.id }]) %}
+		  {% endfor %}
+
+		  {{ forms.selectField({
+			  label: "Target Site",
+			  instructions: 'Choose site',
+			  id: 'siteId',
+			  name: 'siteId',
+			  options: sites,
+			  value: craft.app.request.post('siteId')|default(craft.app.sites.primarySite.id),
+		  }) }}
+
+		  <script>
+			  document.getElementById('siteId').onchange = function() {
+				  document.getElementById('main-form').action.setAttribute('disabled', 'disabled');
+				  document.getElementById('main-form').submit();
+			  };
+		  </script>
+	  {% endif %}
+
     {% if isStructure %}
-      {% set entries = craft.isolate.getStructureEntries(section.id) %}
+      {% set entries = craft.isolate.getStructureEntries(section.id, craft.app.request.post('siteId')|default(craft.app.sites.primarySite.id)) %}
     {% else %}
-      {% set entries = craft.isolate.getAllEntries(section.id) %}
+      {% set entries = craft.isolate.getAllEntries(section.id, craft.app.request.post('siteId')|default(craft.app.sites.primarySite.id)) %}
     {% endif %}
 
     <input type="hidden" name="action" value="isolate/users/save">
