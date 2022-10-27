@@ -295,16 +295,17 @@ class IsolateService extends Component
 
         return false;
     }
-
-    /**
-     * Gets the IDs of every entry a user can edit
-     * Can be scoped down to specific sections
-     *
-     * @param integer $userId
-     * @param integer $sectionId
-     * @return array
-     */
-    public function getUserEntriesIds(int $userId, int $sectionId = null)
+	
+	/**
+	 * Gets the IDs of every entry a user can edit
+	 * Can be scoped down to specific sections
+	 *
+	 * @param integer $userId
+	 * @param int|null $sectionId
+	 * @param int|null $siteId
+	 * @return array
+	 */
+    public function getUserEntriesIds(int $userId, int $sectionId = null, int $siteId = null)
     {
         $isoQuery = new Query();
 
@@ -344,7 +345,6 @@ class IsolateService extends Component
             ->filterWhere(["ent.sectionId" => $sectionId])
             ->andFilterWhere(["not", ["ent.sectionId" => $isolatedSections]])
             ->all();
-
         foreach ($sectionEntries as $entry)
         {
             $ids[] = $entry['id'];
@@ -354,21 +354,21 @@ class IsolateService extends Component
 
         return $ids;
     }
-
-    /**
-     * Takes the IDs of every entry a user can access and returns an entry model loop
-     *
-     * @param integer $userId
-     * @param integer $sectionId
-     * @param int $limit
-     * @param bool $getDrafts
-     * @return array
-     */
-    public function getUserEntries(int $userId, int $sectionId = null, int $limit = 50, bool $getDrafts = false)
+	
+	/**
+	 * Takes the IDs of every entry a user can access and returns an entry model loop
+	 *
+	 * @param integer $userId
+	 * @param int|null $sectionId
+	 * @param int $limit
+	 * @param bool $getDrafts
+	 * @param int|null $siteId
+	 * @return array
+	 */
+    public function getUserEntries(int $userId, int $sectionId = null, int $limit = 50, bool $getDrafts = false, int $siteId = null)
     {
-        $ids = $this->getUserEntriesIds($userId, $sectionId);
-
-        return Entry::find()->id($ids)->status(null)->limit($limit)->drafts($getDrafts);
+        $ids = $this->getUserEntriesIds($userId, $sectionId, $siteId);
+        return Entry::find()->id($ids)->status(null)->limit($limit)->drafts($getDrafts)->siteId($siteId);
     }
 
     /**

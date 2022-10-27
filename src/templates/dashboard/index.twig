@@ -72,7 +72,9 @@
         </tr>
       </thead>
       <tbody>
-        {% paginate craft.isolate.getUserEntries(currentUser.id, section.id) as pageInfo, pageEntries %}
+
+        {% set site = craft.app.sites.getSiteByHandle(craft.app.request.getQueryParam('site')) %}
+        {% paginate craft.isolate.getUserEntries(currentUser.id, section.id, 50, false, site.id) as pageInfo, pageEntries %}
 
         {% for entry in pageEntries %}
           <tr>
