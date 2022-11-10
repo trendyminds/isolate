@@ -50,11 +50,7 @@
       {% set isolatedEntries = isolatedEntries | merge([record.entryId]) %}
     {% endfor %}
 
-    {% if isStructure %}
-      {% set entries = craft.isolate.getStructureEntries(section.id) %}
-    {% else %}
-      {% set entries = craft.isolate.getAllEntries(section.id) %}
-    {% endif %}
+    {% set entries = craft.isolate.getAllEntries(section.id) %}
 
     <input type="hidden" name="action" value="isolate/users/save">
     <input type="hidden" name="userId" value="{{user.id}}">
