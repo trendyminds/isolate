@@ -1,5 +1,13 @@
 # Release Notes for Isolate
 
+## 2.1.0 - 2022-11-10
+
+### Fixed
+- Fixes an issue where structure-based queries return all entries on the site
+
+### Changed
+- Remove `getStructureEntries()` and make all queries through `getAllEntries()`.
+
 ## 2.0.0 - 2022-07-05
 
 ### Added
