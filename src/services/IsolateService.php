@@ -144,29 +144,6 @@ class IsolateService extends Component
         return $section->type === Section::TYPE_STRUCTURE;
     }
 
-	/**
-	 * Returns all entries contained in a structure
-	 *
-	 * @param int $sectionId
-	 * @param int $siteId
-	 *
-	 * @return mixeds
-	 */
-    public function getStructureEntries(int $sectionId, $siteId = false)
-    {
-        /** @var Sections $sections */
-        $sections = Craft::$app->getSections();
-        $section = $sections->getSectionById($sectionId);
-
-        /** @var Structures $structures */
-        $structures = Craft::$app->getStructures();
-        $structure = $structures->getStructureById($section->structureId);
-
-        return $this->groupEntries(
-            Entry::findAll([ "structureId" => $structure->id, "status" => null, 'siteId' => $siteId ])
-        );
-    }
-
     /**
      * Groups entries with the same ID (multi-site setup)
      *

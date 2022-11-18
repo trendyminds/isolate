@@ -52,9 +52,4 @@ class IsolateVariable
     {
         return Isolate::$plugin->isolateService->isStructure($sectionId);
     }
-
-    public function getStructureEntries(int $sectionId, int|bool $siteId = false)
-    {
-        return Isolate::$plugin->isolateService->getStructureEntries($sectionId, $siteId);
-    }
 }

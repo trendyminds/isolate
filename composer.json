@@ -2,7 +2,7 @@
     "name": "trendyminds/isolate",
     "description": "Restrict your Craft CMS users on a per-entry basis",
     "type": "craft-plugin",
-    "version": "2.0.0",
+    "version": "2.1.0",
     "keywords": [
         "permissions",
         "entry permission",

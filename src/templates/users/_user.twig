@@ -78,11 +78,7 @@
 		  </script>
 	  {% endif %}
 
-    {% if isStructure %}
-      {% set entries = craft.isolate.getStructureEntries(section.id, craft.app.request.post('siteId')|default(sites.0.value)) %}
-    {% else %}
-      {% set entries = craft.isolate.getAllEntries(section.id, craft.app.request.post('siteId')|default(sites.0.value)) %}
-    {% endif %}
+    {% set entries = craft.isolate.getAllEntries(section.id, craft.app.request.post('siteId')|default(sites.0.value)) %}
 
     <input type="hidden" name="action" value="isolate/users/save">
     <input type="hidden" name="userId" value="{{user.id}}">
