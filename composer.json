@@ -37,7 +37,7 @@
         "name": "Isolate",
         "handle": "isolate",
         "hasCpSettings": true,
-        "hasCpSection": true,
+        "hasCpSection": false,
         "changelogUrl": "https://raw.githubusercontent.com/trendyminds/isolate/master/CHANGELOG.md",
         "components": {
             "isolateService": "trendyminds\\isolate\\services\\IsolateService"
