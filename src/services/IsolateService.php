@@ -347,16 +347,17 @@ class IsolateService extends Component
         $ids = $this->getUserEntriesIds($userId, $sectionId, $siteId);
         return Entry::find()->id($ids)->status(null)->limit($limit)->drafts($getDrafts)->siteId($siteId);
     }
-
-    /**
-     * Checks if a user can edit an entry give a path
-     *
-     * @param integer $userId
-     * @param string $path
-     * @return bool
-     * @throws ForbiddenHttpException
-     */
-    public function verifyIsolatedUserAccess(int $userId, string $path)
+	
+	/**
+	 * Checks if a user can edit an entry give a path
+	 *
+	 * @param integer $userId
+	 * @param string $path
+	 * @param bool $redirect_to_dashboard
+	 * @return bool
+	 * @throws ForbiddenHttpException
+	 */
+    public function verifyIsolatedUserAccess(int $userId, string $path, bool $redirect_to_dashboard = true)
     {
         $segments = Craft::$app->request->getSegments();
 
@@ -378,7 +379,7 @@ class IsolateService extends Component
 
         // Deny isolated user access to the entries area by redirecting back to dashboard
         // Redirecting because saving an entry often takes a user back to the entries listing
-        if (count($segments) && $segments[0] === "entries" && !isset($segments[2]))
+        if (count($segments) && $segments[0] === "entries" && !(isset($segments[2])) && $redirect_to_dashboard)
         {
             $url = "isolate";
 

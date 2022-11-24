@@ -76,7 +76,7 @@ class Isolate extends Plugin
                     if (Isolate::$plugin->isolateService->isUserIsolated(Craft::$app->getUser()->id))
                     {
                         Craft::$app->getView()->registerAssetBundle(IsolateAsset::class);
-                        Isolate::$plugin->isolateService->verifyIsolatedUserAccess(Craft::$app->getUser()->id, Craft::$app->request->pathInfo);
+                        Isolate::$plugin->isolateService->verifyIsolatedUserAccess(Craft::$app->getUser()->id, Craft::$app->request->pathInfo, false);
                     }
                 }
 
