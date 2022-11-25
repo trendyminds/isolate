@@ -15,7 +15,7 @@ class Isolate {
     this.$mainNav = document.querySelector("#nav");
 
     this.moveIsolateNav();
-    this.removeEntriesNav();
+    // this.removeEntriesNav();
   }
 
   removeEntriesNav() {
