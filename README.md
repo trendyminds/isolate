@@ -2,6 +2,11 @@
 
 ![Entry-based restrictions for your users](resources/img/promo.png)
 
+## Craft 5+ Plans
+With all the new slide-out functionality in Craft, and the [entrification](https://craftcms.com/blog/entrification) plan for Craft 5+ we aren't planning to update Isolate to be Craft 5+ compatible. There's just too many scenarios to account for (including things like multisite, as well).
+
+Would love to something comparable baked into Craft natively at some point, but I'm sure the Pixel and Tonic folks have their hands full with all [other planned items](https://craftcms.com/roadmap)!
+
 ## What is Isolate?
 
 Craft allows you to restrict users to specific content types, but you cannot scope users to only specific _entries_ in those content types. Isolate is a user management tool to manage users on a per-entry basis.
