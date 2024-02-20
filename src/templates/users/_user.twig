@@ -50,7 +50,35 @@
       {% set isolatedEntries = isolatedEntries | merge([record.entryId]) %}
     {% endfor %}
 
-    {% set entries = craft.isolate.getAllEntries(section.id) %}
+	  {% if craft.app.isMultiSite() %}
+		  {% set sites = [] %}
+
+		  {% for site in craft.app.sites.getAllSites() %}
+			  {% for sitesettings in section.siteSettings %}
+			     {% if sitesettings.siteId == site.id %}
+				     {% set sites = sites|merge([{ label: site.name, value: site.id }]) %}
+			     {% endif %}
+			  {% endfor %}
+		  {% endfor %}
+
+		  {{ forms.selectField({
+			  label: "Target Site",
+			  instructions: 'Choose site',
+			  id: 'siteId',
+			  name: 'siteId',
+			  options: sites,
+			  value: craft.app.request.post('siteId')|default(sites.0.value),
+		  }) }}
+
+		  <script>
+			  document.getElementById('siteId').onchange = function() {
+				  document.getElementById('main-form').action.setAttribute('disabled', 'disabled');
+				  document.getElementById('main-form').submit();
+			  };
+		  </script>
+	  {% endif %}
+
+    {% set entries = craft.isolate.getAllEntries(section.id, craft.app.request.post('siteId')|default(sites.0.value)) %}
 
     <input type="hidden" name="action" value="isolate/users/save">
     <input type="hidden" name="userId" value="{{user.id}}">

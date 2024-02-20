@@ -15,7 +15,7 @@ class Isolate {
     this.$mainNav = document.querySelector("#nav");
 
     this.moveIsolateNav();
-    this.removeEntriesNav();
+    // this.removeEntriesNav();
   }
 
   removeEntriesNav() {
@@ -26,11 +26,13 @@ class Isolate {
 
   moveIsolateNav() {
     const $isolateNav = this.$mainNav.querySelector("#nav-isolate");
-    const isolateNavHTML = $isolateNav.outerHTML;
-    const $dashboardNav = this.$mainNav.querySelector("#nav-dashboard");
+    if($isolateNav !== null) {
+      const isolateNavHTML = $isolateNav.outerHTML;
+      const $dashboardNav = this.$mainNav.querySelector("#nav-dashboard");
 
-    $isolateNav.parentNode.removeChild($isolateNav);
-    $dashboardNav.insertAdjacentHTML("afterend", isolateNavHTML);
+      $isolateNav.parentNode.removeChild($isolateNav);
+      $dashboardNav.insertAdjacentHTML("afterend", isolateNavHTML);
+    }
   }
 }
 

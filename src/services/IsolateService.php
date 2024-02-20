@@ -114,16 +114,18 @@ class IsolateService extends Component
         return $data;
     }
 
-    /**
-     * Get all entries by section
-     *
-     * @param string $sectionHandle
-     * @return array
-     */
-    public function getAllEntries(int $sectionId)
+	/**
+	 * Get all entries by section
+	 *
+	 * @param int      $sectionId
+	 * @param int|bool $siteId
+	 *
+	 * @return array
+	 */
+    public function getAllEntries(int $sectionId, int|bool $siteId = false)
     {
         return $this->groupEntries(
-            Entry::findAll([ "sectionId" => $sectionId, "status" => null ])
+            Entry::findAll([ "sectionId" => $sectionId, "status" => null, 'siteId' => $siteId ])
         );
     }
 
@@ -270,16 +272,17 @@ class IsolateService extends Component
 
         return false;
     }
-
-    /**
-     * Gets the IDs of every entry a user can edit
-     * Can be scoped down to specific sections
-     *
-     * @param integer $userId
-     * @param integer $sectionId
-     * @return array
-     */
-    public function getUserEntriesIds(int $userId, int $sectionId = null)
+	
+	/**
+	 * Gets the IDs of every entry a user can edit
+	 * Can be scoped down to specific sections
+	 *
+	 * @param integer $userId
+	 * @param int|null $sectionId
+	 * @param int|null $siteId
+	 * @return array
+	 */
+    public function getUserEntriesIds(int $userId, int $sectionId = null, int $siteId = null)
     {
         $isoQuery = new Query();
 
@@ -319,7 +322,6 @@ class IsolateService extends Component
             ->filterWhere(["ent.sectionId" => $sectionId])
             ->andFilterWhere(["not", ["ent.sectionId" => $isolatedSections]])
             ->all();
-
         foreach ($sectionEntries as $entry)
         {
             $ids[] = $entry['id'];
@@ -329,32 +331,33 @@ class IsolateService extends Component
 
         return $ids;
     }
-
-    /**
-     * Takes the IDs of every entry a user can access and returns an entry model loop
-     *
-     * @param integer $userId
-     * @param integer $sectionId
-     * @param int $limit
-     * @param bool $getDrafts
-     * @return array
-     */
-    public function getUserEntries(int $userId, int $sectionId = null, int $limit = 50, bool $getDrafts = false)
+	
+	/**
+	 * Takes the IDs of every entry a user can access and returns an entry model loop
+	 *
+	 * @param integer $userId
+	 * @param int|null $sectionId
+	 * @param int $limit
+	 * @param bool $getDrafts
+	 * @param int|null $siteId
+	 * @return array
+	 */
+    public function getUserEntries(int $userId, int $sectionId = null, int $limit = 50, bool $getDrafts = false, int $siteId = null)
     {
-        $ids = $this->getUserEntriesIds($userId, $sectionId);
-
-        return Entry::find()->id($ids)->status(null)->limit($limit)->drafts($getDrafts);
+        $ids = $this->getUserEntriesIds($userId, $sectionId, $siteId);
+        return Entry::find()->id($ids)->status(null)->limit($limit)->drafts($getDrafts)->siteId($siteId);
     }
-
-    /**
-     * Checks if a user can edit an entry give a path
-     *
-     * @param integer $userId
-     * @param string $path
-     * @return bool
-     * @throws ForbiddenHttpException
-     */
-    public function verifyIsolatedUserAccess(int $userId, string $path)
+	
+	/**
+	 * Checks if a user can edit an entry give a path
+	 *
+	 * @param integer $userId
+	 * @param string $path
+	 * @param bool $redirect_to_dashboard
+	 * @return bool
+	 * @throws ForbiddenHttpException
+	 */
+    public function verifyIsolatedUserAccess(int $userId, string $path, bool $redirect_to_dashboard = true)
     {
         $segments = Craft::$app->request->getSegments();
 
@@ -376,7 +379,7 @@ class IsolateService extends Component
 
         // Deny isolated user access to the entries area by redirecting back to dashboard
         // Redirecting because saving an entry often takes a user back to the entries listing
-        if (count($segments) && $segments[0] === "entries" && !isset($segments[2]))
+        if (count($segments) && $segments[0] === "entries" && !(isset($segments[2])) && $redirect_to_dashboard)
         {
             $url = "isolate";
 
