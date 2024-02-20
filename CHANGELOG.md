@@ -1,5 +1,10 @@
 # Release Notes for Isolate
 
+## 2.1.1 - 2024-02-20
+
+### Fixed
+- Fixes the permission syntax required for granting users Isolate permissions
+
 ## 2.1.0 - 2022-11-10
 
 ### Fixed

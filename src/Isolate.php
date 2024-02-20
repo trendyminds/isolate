@@ -110,7 +110,9 @@ class Isolate extends Plugin
                 $event->permissions["Isolate"] = [
                     'heading' => 'Isolate',
                     'permissions' => [
-                        ['label' => 'Assign permissions'],
+                        'isolate:assign' => [
+                            'label' => 'Assign Entries'
+                        ],
                     ],
                 ];
             }
